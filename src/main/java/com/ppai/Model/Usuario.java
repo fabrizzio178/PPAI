@@ -13,7 +13,13 @@ public class Usuario {
     private String suscripcion;
     private Empleado empleado;
 
-    public Usuario(String contrasena, String nombreUsuario, String perfil, String suscripcion, Empleado empleado){
+    public Usuario(
+            String contrasena,
+            String nombreUsuario,
+            String perfil,
+            String suscripcion,
+            Empleado empleado
+    ){
         this.contrasena = contrasena;
         this.nombreUsuario = nombreUsuario;
         this.perfil = perfil;

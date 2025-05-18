@@ -16,7 +16,16 @@ public class OrdenDeInspeccion {
     private Estado estado;
     private Empleado empleado;
 
-    public OrdenDeInspeccion(Integer numeroOrden, String fechaHoraFinalizacion, String fechaHoraCierre, String fechaHoraInicio, String observacionCierre, EstacionSismologica estacionSismologica, Estado estado, Empleado empleado){
+    public OrdenDeInspeccion(
+            Integer numeroOrden,
+            String fechaHoraFinalizacion,
+            String fechaHoraCierre,
+            String fechaHoraInicio,
+            String observacionCierre,
+            EstacionSismologica estacionSismologica,
+            Estado estado,
+            Empleado empleado
+    ){
         this.numeroOrden = numeroOrden;
         this.fechaHoraFinalizacion = fechaHoraFinalizacion;
         this.fechaHoraCierre = fechaHoraCierre;

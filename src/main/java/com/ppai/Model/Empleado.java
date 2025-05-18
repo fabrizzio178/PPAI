@@ -12,7 +12,12 @@ public class Empleado {
     private String mail;
     private String telefono;
 
-    public Empleado(String apellido, String nombre, String mail, String telefono) {
+    public Empleado(
+            String apellido,
+            String nombre,
+            String mail,
+            String telefono
+    ) {
         this.apellido = apellido;
         this.nombre = nombre;
         this.mail = mail;

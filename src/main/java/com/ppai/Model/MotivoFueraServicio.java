@@ -10,7 +10,10 @@ public class MotivoFueraServicio {
     private String comentario;
     private String motivoTipo;
 
-    public MotivoFueraServicio(String comentario, String motivoTipo){
+    public MotivoFueraServicio(
+            String comentario,
+            String motivoTipo
+    ){
         this.comentario = comentario;
         this.motivoTipo = motivoTipo;
     }

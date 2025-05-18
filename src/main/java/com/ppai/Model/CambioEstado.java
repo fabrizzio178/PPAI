@@ -2,6 +2,7 @@ package com.ppai.Model;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -13,9 +14,15 @@ public class CambioEstado {
     private String fechaHoraInicio;
     private Estado estado;
     private Empleado responsableInspeccion;
-    private MotivoFueraServicio motivoFueraServicio;
+    private ArrayList<MotivoFueraServicio> motivoFueraServicio;
 
-    public CambioEstado(String fechaHoraFin, String fechaHoraInicio, Estado estado, Empleado responsableInspeccion, MotivoFueraServicio motivoFueraServicio){
+    public CambioEstado(
+            String fechaHoraFin,
+            String fechaHoraInicio,
+            Estado estado,
+            Empleado responsableInspeccion,
+            ArrayList<MotivoFueraServicio> motivoFueraServicio
+    ){
         this.fechaHoraFin = fechaHoraFin;
         this.fechaHoraInicio = fechaHoraInicio;
         this.estado = estado;
