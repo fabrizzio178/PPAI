@@ -1,6 +1,6 @@
 package com.ppai;
 
-import com.ppai.Model.OrdenInspeccion;
+import com.ppai.Model.OrdenDeInspeccion;
 import com.ppai.Service.GestorResultados;
 
 import java.util.Scanner;
@@ -17,7 +17,7 @@ public class Main {
         int seleccion = scanner.nextInt();
         scanner.nextLine(); // limpiar buffer
 
-        OrdenInspeccion orden = gestor.seleccionarOrdenPorNumero(seleccion);
+        OrdenDeInspeccion orden = gestor.seleccionarOrdenPorNumero(seleccion);
 
         if (orden != null) {
             System.out.println("Seleccionada: Orden " + orden.getNumeroOrden() + " de la estación " + orden.getEstacion().getNombre());
