@@ -75,7 +75,7 @@ public class GestorResultados {
         for (OrdenDeInspeccion orden : ordenesInsp) {
             datosOrdenes.add(orden.getDatosOI(todosSismografos));
         }
-        return datosOrdenes;
+        return datosOrdenes; //enviar a pantalla
     }
 
 }
