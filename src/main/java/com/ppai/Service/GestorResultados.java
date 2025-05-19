@@ -27,36 +27,45 @@ public class GestorResultados {
     private ArrayList<Sismografo> sismografos;
 
     // 1era función que busca el RI logueado
-    public void buscarRIlogueado(ArrayList<Usuario> usuarios) {
-        Empleado resultado = null;
-        for (Usuario usuario : usuarios) {
-            if (usuario.estasLogueado()) {
-                resultado = usuario.getRILogueado();
-            }
-        }
-        this.usuarioLogueado = resultado;
+    public void buscarRIlogueado(Sesion sesion) {
+        this.usuarioLogueado = sesion.getUsuario().getRILogueado();; //CAMBIAR DIAG SECUENCIA  GESTOR -> SESION -> USUARIO -> EMPLEADO
     }
 
     // 2da función que busca datos de las ordenes de inspeccion del R.I logueado
-    public void buscarOrdenesInsp(ArrayList<OrdenDeInspeccion> ordenesInsp) {
-        Empleado logueado = this.usuarioLogueado;
-        String nombreEstacion = "";
-        String numeroSismografo = "";
-        String identificadorSismografo = "";
+//    public void buscarOrdenesInsp(ArrayList<OrdenDeInspeccion> ordenesInsp) {
+//        Empleado logueado = this.usuarioLogueado;
+//        String nombreEstacion = "";
+//        String numeroSismografo = "";
+//        String identificadorSismografo = "";
+//        for (OrdenDeInspeccion orden : ordenesInsp) {
+//            if (orden.sosDeEmpleado(logueado) && orden.sosCompletamenteRealizada()) {
+//               orden.getDatosIO();
+//               nombreEstacion = orden.buscarNombreEstacion();
+//
+//               for (Sismografo sismografo : sismografos) {
+//                   if (sismografo.sosDeEstacion(orden.getEstacionSismologica())){
+//                       identificadorSismografo = sismografo.getIdentificadorSismografo();
+//                   }
+//               }
+//            }
+//        }
+//    }
+
+    public void buscarOrdenesInsp(ArrayList<OrdenDeInspeccion> ordenesInsp) { //es la mitad del loop grande, creo que el resto se puede implementar en el mostrar
+        Empleado empleado = this.usuarioLogueado;                             //si no hay que crear otro atributo para los datos (inneccesario) y el nombre de la estacion
+        ArrayList<OrdenDeInspeccion> ordenesInspSel = new ArrayList<>();
         for (OrdenDeInspeccion orden : ordenesInsp) {
-            if (orden.sosDeEmpleado(logueado) && orden.sosCompletamenteRealizada()) {
-               orden.getDatosIO();
-               nombreEstacion = orden.buscarNombreEstacion();
+            Boolean esDeEmpleado = orden.sosDeEmpleado(empleado);
+            Boolean esCompletamenteRealizada = orden.sosCompletamenteRealizada();
 
-               for (Sismografo sismografo : sismografos) {
-                   if (sismografo.sosDeEstacion(orden.getEstacionSismologica())){
-                       identificadorSismografo = sismografo.getIdentificadorSismografo();
-                   }
-
-               }
-
-
+            if (esDeEmpleado && esCompletamenteRealizada) {
+                ordenesInspSel.add(orden);
             }
         }
+        this.ordenesInsp = ordenesInspSel;
+    }
+
+    public void ordenarPorFechaFinalizacion() {
+        this.ordenesInsp.sort();
     }
 }

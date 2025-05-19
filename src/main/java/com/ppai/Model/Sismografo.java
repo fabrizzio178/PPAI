@@ -9,6 +9,9 @@ import lombok.Setter;
 @Setter
 
 public class Sismografo {
+
+    private static ArrayList<Sismografo> sismografos = new ArrayList<>();
+
     private LocalDateTime fechaAdquisicion;
     private String identificadorSismografo;
     private String numeroDeSerie;

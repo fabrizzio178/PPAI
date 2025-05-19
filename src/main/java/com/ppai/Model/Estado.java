@@ -3,10 +3,15 @@ package com.ppai.Model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+
 @Getter
 @Setter
 
 public class Estado {
+
+    private static ArrayList<Estado> estados = new ArrayList<>();
+
     private String ambito;
     private String nombreEstado;
 
@@ -16,6 +21,7 @@ public class Estado {
     ){
         this.ambito = ambito;
         this.nombreEstado = nombreEstado;
+        estados.add(this);
     }
 
     public Boolean sosCompletamenteRealizada() {

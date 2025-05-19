@@ -4,10 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Getter
 @Setter
 public class EstacionSismologica {
+
+    private static ArrayList<EstacionSismologica> estacionesSismologicas = new ArrayList<>();
+
     private String codigoEstacion;
     private String documentoCertificacionAdq;
     private LocalDateTime fechaSolicitudCerificacion;
@@ -32,6 +36,7 @@ public class EstacionSismologica {
         this.longitud = longitud;
         this.nombre = nombre;
         this.numeroCertificacionAdquisicion = numeroCertificacionAdquisicion;
+        estacionesSismologicas.add(this);
     }
     public String buscarNumeroSismografo(Sismografo sismografo) {
         if(sismografo != null){

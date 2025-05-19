@@ -3,10 +3,15 @@ package com.ppai.Model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+
 @Getter
 @Setter
 
 public class Usuario {
+
+    private static ArrayList<Usuario> usuarios = new ArrayList<>();
+
     private String contrasena;
     private String nombreUsuario;
     private String perfil;
@@ -25,6 +30,7 @@ public class Usuario {
         this.perfil = perfil;
         this.suscripcion = suscripcion;
         this.empleado = empleado;
+        usuarios.add(this);
     }
 
     public String buscarEmpleado() {

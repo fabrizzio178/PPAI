@@ -11,6 +11,9 @@ import java.util.List;
 @Setter
 
 public class OrdenDeInspeccion {
+
+    private static ArrayList<OrdenDeInspeccion> ordenesDeInspeccion = new ArrayList<>();
+
     private Integer numeroOrden;
     private LocalDateTime fechaHoraFinalizacion;
     private LocalDateTime fechaHoraCierre;
@@ -38,6 +41,7 @@ public class OrdenDeInspeccion {
         this.estacionSismologica = estacionSismologica;
         this.estado = estado;
         this.empleado = empleado;
+        ordenesDeInspeccion.add(this);
     }
 
     public Boolean sosDeEmpleado(Empleado empleado) {

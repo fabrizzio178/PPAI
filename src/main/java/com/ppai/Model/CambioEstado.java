@@ -12,6 +12,9 @@ import java.util.List;
 // private ArrayList<Clase> atributo
 
 public class CambioEstado {
+
+    private static List<CambioEstado> cambiosEstado = new ArrayList<>();
+
     private LocalDateTime fechaHoraFin;
     private LocalDateTime fechaHoraInicio;
     private Estado estado;
@@ -30,6 +33,7 @@ public class CambioEstado {
         this.estado = estado;
         this.responsableInspeccion = responsableInspeccion;
         this.motivoFueraServicio = motivoFueraServicio;
+        cambiosEstado.add(this);
     };
 
     public boolean sosActual () {
