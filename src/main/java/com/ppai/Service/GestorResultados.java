@@ -134,13 +134,43 @@ public class GestorResultados {
             System.out.println("- " + motivoSeleccionado.getMotivoTipo());
         }
     }
-
-
     public void tomarConfirmacion(OrdenDeInspeccion orden) {
         String fechaHoraActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         orden.setFechaHoraCierre(fechaHoraActual);
         System.out.println("Orden cerrada con éxito. Fecha de cierre: " + fechaHoraActual);
     }
+
+    public void validarObservacionExistente(OrdenDeInspeccion orden){
+        String observacion = orden.getObservacionCierre();
+        if (observacion == null || observacion.trim().isEmpty()) {
+            System.out.println("No se ingreso ninguna observación");
+        } else{
+            System.out.println("Observacion registrada: " + observacion);
+        }
+    }
+
+    public void validarMotivoExistente(){
+        if (motivosSeleccionados.isEmpty()){
+            System.out.println("No se seleccionaron motivos.");
+        } else{
+            System.out.println("Hay motivos seleccionados");
+        }
+    }
+
+    public void buscarEstadoCerradaOI(Estado estado){
+        String nombre = estado.getNombreEstado();
+        String ambito = estado.getAmbito();
+
+        if ("OrdenInspeccion".equalsIgnoreCase(ambito) && "OICerrada".equalsIgnoreCase(nombre)){
+            System.out.println("Estado válido: OICerrada en ámbito OrdenInspeccion");
+        }else{
+            System.out.println("Estado no coincide con OICerrada/OrdenInspeccion.");
+        }
+    }
+
+
+
+
 
 
 
