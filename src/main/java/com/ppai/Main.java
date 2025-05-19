@@ -3,7 +3,6 @@ package com.ppai;
 import com.ppai.Model.OrdenDeInspeccion;
 import com.ppai.Model.EstacionSismologica;
 import com.ppai.Model.Empleado;
-import com.ppai.Model.Estado;
 import com.ppai.Service.GestorResultados;
 
 import java.util.Scanner;
@@ -20,7 +19,7 @@ public class Main {
         int seleccion = scanner.nextInt();
         scanner.nextLine(); // limpiar buffer
 
-        OrdenDeInspeccion orden = gestor.seleccionarOrdenPorNumero(seleccion);
+        OrdenDeInspeccion orden = gestor.solicitarSeleccionOrdenesInspeccionRealizadas(seleccion);
 
         if (orden != null) {
             // Mostrar detalles completos de la orden
@@ -47,10 +46,10 @@ public class Main {
             // Ingreso de observación
             System.out.print("\nIngrese observación de cierre: ");
             String observacion = scanner.nextLine();
-            gestor.ingresarObservacion(orden, observacion);
+            gestor.pedirObservacion(orden, observacion);
 
             // Confirmar cierre
-            gestor.confirmarCierre(orden);
+            gestor.tomarConfirmacion(orden);
         } else {
             System.out.println("Orden no encontrada.");
         }

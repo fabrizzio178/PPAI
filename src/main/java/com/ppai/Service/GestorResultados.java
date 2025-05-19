@@ -4,6 +4,7 @@ import com.ppai.Model.Empleado;
 import com.ppai.Model.EstacionSismologica;
 import com.ppai.Model.Estado;
 import com.ppai.Model.OrdenDeInspeccion;
+import com.ppai.Model.MotivoFueraServicio;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +18,24 @@ public class GestorResultados {
         this.ordenes = new ArrayList<>();
         cargarOrdenesHardCodeadas();
     }
+
+    public List<OrdenDeInspeccion> getListaOrdenes() {
+        return ordenes;
+    }
+
+    public List<MotivoFueraServicio> getListaMotivosDisponibles() {
+        // simulación si aún no lo tenés
+        return List.of(
+                new MotivoFueraServicio("Sin energía", "NO ENERGY"),
+                new MotivoFueraServicio("Mantenimiento", "MAINTENANCE"),
+                new MotivoFueraServicio("Problema técnico", "TECNICAL PROBLEM")
+        );
+    }
+
+
+
+
+
 
     private void cargarOrdenesHardCodeadas() {
         EstacionSismologica estacion1 = new EstacionSismologica(
@@ -75,21 +94,29 @@ public class GestorResultados {
         }
     }
 
-    public OrdenDeInspeccion seleccionarOrdenPorNumero(int numero) {
+    public OrdenDeInspeccion solicitarSeleccionOrdenesInspeccionRealizadas(int numero) {
         for (OrdenDeInspeccion orden : ordenes) {
             if (orden.getNumeroOrden() == numero) return orden;
         }
         return null;
     }
 
-    public void ingresarObservacion(OrdenDeInspeccion orden, String observacion) {
+    public void pedirObservacion(OrdenDeInspeccion orden, String observacion) {
         orden.setObservacionCierre(observacion);
         System.out.println("Observación registrada.");
     }
 
-    public void confirmarCierre(OrdenDeInspeccion orden) {
+    public void buscarMotivos(){
+
+    }
+
+    public void tomarConfirmacion(OrdenDeInspeccion orden) {
         String fechaHoraActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         orden.setFechaHoraCierre(fechaHoraActual);
         System.out.println("Orden cerrada con éxito. Fecha de cierre: " + fechaHoraActual);
     }
+
+
+
+
 }
