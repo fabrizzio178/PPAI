@@ -53,10 +53,17 @@ public class OrdenDeInspeccion {
         return this.estado.getNombreEstado().equalsIgnoreCase("completamente realizada");
     }
 
-    public ArrayList<Object> getDatosIO() {
+    public ArrayList<Object> getDatosOI(ArrayList<Sismografo> todosSismografos) {
         ArrayList<Object> datos = new ArrayList<>();
         datos.add(this.numeroOrden);
         datos.add(this.fechaHoraFinalizacion);
+        datos.add(this.estacionSismologica.getNombre());
+        for (Sismografo sismografo : todosSismografos) {
+            if (sismografo.getEstacionSismologica().getNombre().equalsIgnoreCase(this.estacionSismologica.getNombre())) {
+                datos.add(sismografo.getIdentificadorSismografo());
+                break;
+            }
+        }
         return datos;
     };
 

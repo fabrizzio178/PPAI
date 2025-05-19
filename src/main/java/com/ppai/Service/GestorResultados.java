@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
 @Getter
@@ -66,6 +67,15 @@ public class GestorResultados {
     }
 
     public void ordenarPorFechaFinalizacion() {
-        this.ordenesInsp.sort();
+        this.ordenesInsp.sort(Comparator.comparing(OrdenDeInspeccion::getFechaHoraFinalizacion));
     }
+
+    public ArrayList<ArrayList<Object>> mostrarDatosOrdenInspeccion(ArrayList<OrdenDeInspeccion> ordenesInsp, ArrayList<Sismografo> todosSismografos) {
+        ArrayList<ArrayList<Object>> datosOrdenes = new ArrayList<>();  //PARAMETROS: lista de las ordenes filtradas arriba, lista de todos los sismografos
+        for (OrdenDeInspeccion orden : ordenesInsp) {
+            datosOrdenes.add(orden.getDatosOI(todosSismografos));
+        }
+        return datosOrdenes;
+    }
+
 }

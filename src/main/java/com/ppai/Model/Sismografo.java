@@ -51,4 +51,5 @@ public class Sismografo {
     public Boolean sosDeEstacion(EstacionSismologica estacionSismologica) {
         return this.estacionSismologica.getNombre().equalsIgnoreCase(estacionSismologica.getNombre());
     }
+
 }
