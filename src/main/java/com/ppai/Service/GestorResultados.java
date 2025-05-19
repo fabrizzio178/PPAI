@@ -1,20 +1,17 @@
 package com.ppai.Service;
 
-import com.ppai.Model.Empleado;
-import com.ppai.Model.EstacionSismologica;
-import com.ppai.Model.Estado;
-import com.ppai.Model.OrdenDeInspeccion;
-import com.ppai.Model.MotivoFueraServicio;
+import com.ppai.Model.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class GestorResultados {
     private List<OrdenDeInspeccion> ordenes;
     private List<MotivoFueraServicio> motivosSeleccionados = new ArrayList<>();
+    private ArrayList<Sismografo> sismografos = new ArrayList<>();
+    private OrdenDeInspeccion ordenSeleccionada;
 
     public GestorResultados() {
         this.ordenes = new ArrayList<>();
@@ -26,7 +23,6 @@ public class GestorResultados {
     }
 
     public List<MotivoFueraServicio> getListaMotivosDisponibles() {
-        // simulación si aún no lo tenés
         return List.of(
                 new MotivoFueraServicio("Sin energía", "NO ENERGY"),
                 new MotivoFueraServicio("Mantenimiento", "MAINTENANCE"),
@@ -36,143 +32,125 @@ public class GestorResultados {
 
     private void cargarOrdenesHardCodeadas() {
         EstacionSismologica estacion1 = new EstacionSismologica(
-                "SISMO01",
-                "DOC123",
-                "2024-03-15",
-                -31,
-                -64,
-                "Estación Norte",
-                1001
+                "SISMO01", "DOC123", "2024-03-15", -31, -64, "Estación Norte", 1001
         );
 
         EstacionSismologica estacion2 = new EstacionSismologica(
-                "SISMO02",
-                "DOC456",
-                "2024-04-10",
-                -32,
-                -63,
-                "Estación Sur",
-                1002
+                "SISMO02", "DOC456", "2024-04-10", -32, -63, "Estación Sur", 1002
         );
 
         Empleado empleadoDummy = new Empleado("12345678", "Pipo", "Pipo123@gmail.com", "351392212");
         Estado estadoInicial = new Estado("OrdenInspeccion", "OICerrada");
 
-        ordenes.add(new OrdenDeInspeccion(
-                101,
-                "2025-05-01 10:00",
-                null,
-                "2025-04-30 09:00",
-                null,
-                estacion1,
-                estadoInicial,
-                empleadoDummy
-        ));
-
-        ordenes.add(new OrdenDeInspeccion(
-                102,
-                "2025-05-01 12:00",
-                null,
-                "2025-04-30 11:00",
-                null,
-                estacion2,
-                estadoInicial,
-                empleadoDummy
-        ));
+        ordenes.add(new OrdenDeInspeccion(101, "2025-05-01 10:00", null, "2025-04-30 09:00", null, estacion1, estadoInicial, empleadoDummy));
+        ordenes.add(new OrdenDeInspeccion(102, "2025-05-01 12:00", null, "2025-04-30 11:00", null, estacion2, estadoInicial, empleadoDummy));
     }
 
-    public void mostrarOrdenesDisponibles() {
+    public List<String> mostrarOrdenesDisponiblesComoTexto() {
+        List<String> resultado = new ArrayList<>();
         for (OrdenDeInspeccion orden : ordenes) {
-            System.out.println(
-                    "Número: " + orden.getNumeroOrden()
-                            + " | Estación: " + orden.getEstacionSismologica().getNombre()
-                            + " | Finalización: " + orden.getFechaHoraFinalizacion()
-            );
+            resultado.add("Número: " + orden.getNumeroOrden()
+                    + " | Estación: " + orden.getEstacionSismologica().getNombre()
+                    + " | Finalización: " + orden.getFechaHoraFinalizacion());
         }
+        return resultado;
     }
 
     public OrdenDeInspeccion solicitarSeleccionOrdenesInspeccionRealizadas(int numero) {
         for (OrdenDeInspeccion orden : ordenes) {
-            if (orden.getNumeroOrden() == numero) return orden;
+            if (orden.getNumeroOrden() == numero) {
+                ordenSeleccionada = orden;
+                return orden;
+            }
         }
         return null;
     }
 
     public void pedirObservacion(OrdenDeInspeccion orden, String observacion) {
         orden.setObservacionCierre(observacion);
-        System.out.println("Observación registrada.");
     }
 
-    public void buscarMotivos(){
-        Scanner scanner = new Scanner(System.in);
+    public List<String> buscarMotivosComoTexto() {
+        List<String> texto = new ArrayList<>();
         List<MotivoFueraServicio> motivos = getListaMotivosDisponibles();
-        System.out.println("Motivos disponibles para marcar como fuera de servicio:");
-        for (int i = 0; i < motivos.size(); i++){
+        for (int i = 0; i < motivos.size(); i++) {
             MotivoFueraServicio motivo = motivos.get(i);
-            System.out.println((i+1) + ". " + motivo.getMotivoTipo() + " - " + motivo.getComentario());
+            texto.add((i + 1) + ". " + motivo.getMotivoTipo() + " - " + motivo.getComentario());
         }
+        return texto;
+    }
 
-        System.out.println("Seleccione los motivos (numeros separados por espacio, por ejemplo: 1 2 3):");
-        String[] entradas = scanner.nextLine().split(" ");
-
-        for (String entrada: entradas){
-            try{
-                int index = Integer.parseInt(entrada) - 1;
-                if (index >= 0 && index < motivos.size()){
-                    MotivoFueraServicio motivo = motivos.get(index);
-                    System.out.println("Ingrese comentario para '" + motivo.getMotivoTipo() +"':");
-                    String comentario = scanner.nextLine();
-                    motivo.setComentario(comentario);
-                    motivosSeleccionados.add(motivo);
-                }
-            } catch (NumberFormatException ignored){
+    public void tomarTipoMotivo(List<Integer> indicesSeleccionados) {
+        List<MotivoFueraServicio> motivos = getListaMotivosDisponibles();
+        for (Integer index : indicesSeleccionados) {
+            if (index >= 0 && index < motivos.size()) {
+                motivosSeleccionados.add(motivos.get(index));
             }
         }
+    }
 
-        System.out.println("Motivos seleccionados: ");
-        for (MotivoFueraServicio motivoSeleccionado: motivosSeleccionados){
-            System.out.println("- " + motivoSeleccionado.getMotivoTipo());
+    public void tomarComentario(List<String> comentarios) {
+        for (int i = 0; i < motivosSeleccionados.size() && i < comentarios.size(); i++) {
+            motivosSeleccionados.get(i).setComentario(comentarios.get(i));
         }
     }
+
     public void tomarConfirmacion(OrdenDeInspeccion orden) {
         String fechaHoraActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         orden.setFechaHoraCierre(fechaHoraActual);
-        System.out.println("Orden cerrada con éxito. Fecha de cierre: " + fechaHoraActual);
     }
 
-    public void validarObservacionExistente(OrdenDeInspeccion orden){
+    public boolean validarObservacionExistente(OrdenDeInspeccion orden) {
         String observacion = orden.getObservacionCierre();
-        if (observacion == null || observacion.trim().isEmpty()) {
-            System.out.println("No se ingreso ninguna observación");
-        } else{
-            System.out.println("Observacion registrada: " + observacion);
-        }
+        return observacion != null && !observacion.trim().isEmpty();
     }
 
-    public void validarMotivoExistente(){
-        if (motivosSeleccionados.isEmpty()){
-            System.out.println("No se seleccionaron motivos.");
-        } else{
-            System.out.println("Hay motivos seleccionados");
-        }
+    public boolean validarMotivoExistente() {
+        return !motivosSeleccionados.isEmpty();
     }
 
-    public void buscarEstadoCerradaOI(Estado estado){
+    public boolean buscarEstadoCerradaOI(Estado estado) {
         String nombre = estado.getNombreEstado();
         String ambito = estado.getAmbito();
+        return "OrdenInspeccion".equalsIgnoreCase(ambito) && "OICerrada".equalsIgnoreCase(nombre);
+    }
 
-        if ("OrdenInspeccion".equalsIgnoreCase(ambito) && "OICerrada".equalsIgnoreCase(nombre)){
-            System.out.println("Estado válido: OICerrada en ámbito OrdenInspeccion");
-        }else{
-            System.out.println("Estado no coincide con OICerrada/OrdenInspeccion.");
+    public String getFechaHoraActual() {
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+        return fechaHoraActual.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public List<String> buscarFueraServicio() {
+        List<String> resultado = new ArrayList<>();
+        for (Sismografo s : sismografos) {
+            Estado estado = s.getEstadoActual();
+            if (estado != null && "FueraDeServicio".equalsIgnoreCase(estado.getNombreEstado()) && "Sismografo".equalsIgnoreCase(estado.getAmbito())) {
+                resultado.add("- ID: " + s.getIdentificadorSismografo()
+                        + " | Modelo: " + s.getModelo()
+                        + " | Estación: " + s.getEstacionSismologica().getNombre());
+            }
+        }
+        return resultado;
+    }
+
+    public void cerrarOrdenInspeccion() {
+        if (ordenSeleccionada != null) {
+            String fechaHoraActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            ordenSeleccionada.setFechaHoraCierre(fechaHoraActual);
+            ordenSeleccionada.setEstado(new Estado("OrdenInspeccion", "OICerrada"));
         }
     }
 
-
-
-
-
-
-
-
+    public void ponerSismografoFueraDeServicio() {
+        if (ordenSeleccionada != null) {
+            for (Sismografo sismografo : sismografos) {
+                if (sismografo.getEstacionSismologica().equals(ordenSeleccionada.getEstacionSismologica())) {
+                    sismografo.fueraDeServicio(motivosSeleccionados, ordenSeleccionada.getEmpleado());
+                    break;
+                }
+            }
+        }
+    }
 }
+
+// ESTE CODIGO YA QUEDA LISTO PARA SER CONSUMIDO EN JAVA FX

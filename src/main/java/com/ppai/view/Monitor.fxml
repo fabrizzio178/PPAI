@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ppai.view.Monitor">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Cerrar Orden de Inspección" style="-fx-font-size: 16px;"/>
+
+    <ComboBox fx:id="comboOrdenes" promptText="Seleccionar orden"/>
+    <Button fx:id="btnSeleccionar" text="Seleccionar Orden" onAction="#seleccionarOrden"/>
+
+    <ListView fx:id="listMotivos" prefHeight="100"/>
+    <Button text="Tomar Tipo Motivo" onAction="#tomarTipoMotivo"/>
+
+    <TextArea fx:id="textComentario" promptText="Ingrese comentario..." wrapText="true"/>
+    <Button text="Tomar Comentario" onAction="#tomarComentario"/>
+
+    <Button fx:id="btnConfirmar" text="Confirmar Cierre" onAction="#confirmarCierre"/>
+
+    <Label fx:id="labelResultado" textFill="green"/>
+
+</VBox>
