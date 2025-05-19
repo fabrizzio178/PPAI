@@ -13,11 +13,14 @@ public class TipoMotivo {
     private static ArrayList<TipoMotivo> tiposMotivos = new ArrayList<TipoMotivo>();
 
     private String descripcion;
+    private String nombreTipo;
 
     public TipoMotivo(
-            String descripcion
+            String descripcion,
+            String nombreTipo
     ){
         this.descripcion = descripcion;
+        this.nombreTipo = nombreTipo;
         tiposMotivos.add(this);
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ppai.view.Monitor"
+            prefHeight="400.0" prefWidth="600.0">
+    <VBox spacing="10" padding="20">
+
+        <Label text="Órdenes de Inspección Completadas:" />
+        <ComboBox fx:id="cmbOrdenesInspeccionesRealizadas" prefWidth="300"/>
+
+        <Label text="Observaciones Anteriores:" />
+        <TextArea fx:id="txtObservaciones" prefRowCount="3" editable="false" wrapText="true"/>
+
+        <Label text="Motivo de Fuera de Servicio:" />
+        <ComboBox fx:id="cmbTipoMotivo" prefWidth="300"/>
+
+        <Label text="Comentario Adicional:" />
+        <TextField fx:id="txtComentario" prefWidth="300"/>
+
+        <Button fx:id="btnConfirmar" text="Confirmar Cierre" onAction="#confirmarCierre" />
+
+        <Label fx:id="labelObservaciones" textFill="red" wrapText="true"/>
+
+    </VBox>
+</AnchorPane>
