@@ -17,4 +17,24 @@ public class Estado {
         this.ambito = ambito;
         this.nombreEstado = nombreEstado;
     }
+
+    public Boolean sosCompletamenteRealizada() {
+        return this.nombreEstado.equalsIgnoreCase("completamente realizada");
+    }
+
+    public Boolean sosOICerrada() {
+        return this.nombreEstado.equalsIgnoreCase("Cerrada");
+    }
+
+    public Boolean sosFueraDeServicio() {
+        return this.nombreEstado.equalsIgnoreCase("Fuera de servicio");
+    }
+
+    public Boolean sosAmbitoOrdenInspeccion() {
+        return this.ambito.equalsIgnoreCase("Orden Inspeccion");
+    }
+
+    public Boolean sosAmbitoSismografo() {
+        return this.ambito.equalsIgnoreCase("Sismografo");
+    }
 }

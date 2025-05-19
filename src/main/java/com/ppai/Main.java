@@ -3,14 +3,13 @@ package com.ppai;
 import com.ppai.Model.OrdenDeInspeccion;
 import com.ppai.Model.EstacionSismologica;
 import com.ppai.Model.Empleado;
-import com.ppai.Model.Estado;
-import com.ppai.Service.GestorResultados;
+import com.ppai.Service.GestorResultadosMUERTO;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        GestorResultados gestor = new GestorResultados();
+        GestorResultadosMUERTO gestor = new GestorResultadosMUERTO();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("\n--- Cierre de Orden de Inspección ---\n");
@@ -56,3 +55,5 @@ public class Main {
         }
     }
 }
+
+

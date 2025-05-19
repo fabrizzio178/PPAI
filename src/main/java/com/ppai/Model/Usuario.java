@@ -26,4 +26,16 @@ public class Usuario {
         this.suscripcion = suscripcion;
         this.empleado = empleado;
     }
+
+    public String buscarEmpleado() {
+        return this.empleado.getNombre() + " " + this.empleado.getApellido();
+    }
+
+    public Boolean estasLogueado() {
+        return true;
+    }
+
+    public Empleado getRILogueado() {
+        return this.empleado;
+    }
 }

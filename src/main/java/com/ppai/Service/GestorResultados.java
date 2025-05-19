@@ -1,95 +1,62 @@
 package com.ppai.Service;
+import com.ppai.Model.*;
 
-import com.ppai.Model.Empleado;
-import com.ppai.Model.EstacionSismologica;
-import com.ppai.Model.Estado;
-import com.ppai.Model.OrdenDeInspeccion;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+
+@Getter
+@Setter
 
 public class GestorResultados {
-    private List<OrdenDeInspeccion> ordenes;
+    private Empleado usuarioLogueado;
+    private ArrayList<OrdenDeInspeccion> ordenesInsp;
+    private OrdenDeInspeccion ordenSeleccionada;
+    private String observacion;
+    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicio;
+    private Estado estadoOrdenInspeccionCerrada;
+    private ArrayList<String> comentarios;
+    private Boolean confirmacion;
+    private Date fechaHoraActual;
+    private Rol rolEmpleado;
+    private Estado estadoSismografoFueraDeServicio;
+    private ArrayList<String> mailsEmpleados;
+    private ArrayList<Usuario> usuarios;
+    private ArrayList<Sismografo> sismografos;
 
-    public GestorResultados() {
-        this.ordenes = new ArrayList<>();
-        cargarOrdenesHardCodeadas();
-    }
-
-    private void cargarOrdenesHardCodeadas() {
-        EstacionSismologica estacion1 = new EstacionSismologica(
-                "SISMO01",
-                "DOC123",
-                "2024-03-15",
-                -31,
-                -64,
-                "Estación Norte",
-                1001
-        );
-
-        EstacionSismologica estacion2 = new EstacionSismologica(
-                "SISMO02",
-                "DOC456",
-                "2024-04-10",
-                -32,
-                -63,
-                "Estación Sur",
-                1002
-        );
-
-        Empleado empleadoDummy = new Empleado("12345678", "Pipo", "Pipo123@gmail.com", "351392212");
-        Estado estadoInicial = new Estado("OrdenInspeccion", "OICerrada");
-
-        ordenes.add(new OrdenDeInspeccion(
-                101,
-                "2025-05-01 10:00",
-                null,
-                "2025-04-30 09:00",
-                null,
-                estacion1,
-                estadoInicial,
-                empleadoDummy
-        ));
-
-        ordenes.add(new OrdenDeInspeccion(
-                102,
-                "2025-05-01 12:00",
-                null,
-                "2025-04-30 11:00",
-                null,
-                estacion2,
-                estadoInicial,
-                empleadoDummy
-        ));
-    }
-
-    public void mostrarOrdenesDisponibles() {
-        for (OrdenDeInspeccion orden : ordenes) {
-            System.out.println(
-                    "Número: " + orden.getNumeroOrden()
-                            + " | Estación: " + orden.getEstacionSismologica().getNombre()
-                            + " | Finalización: " + orden.getFechaHoraFinalizacion()
-            );
+    // 1era función que busca el RI logueado
+    public void buscarRIlogueado(ArrayList<Usuario> usuarios) {
+        Empleado resultado = null;
+        for (Usuario usuario : usuarios) {
+            if (usuario.estasLogueado()) {
+                resultado = usuario.getRILogueado();
+            }
         }
+        this.usuarioLogueado = resultado;
     }
 
-    public OrdenDeInspeccion seleccionarOrdenPorNumero(int numero) {
-        for (OrdenDeInspeccion orden : ordenes) {
-            if (orden.getNumeroOrden() == numero) return orden;
+    // 2da función que busca datos de las ordenes de inspeccion del R.I logueado
+    public void buscarOrdenesInsp(ArrayList<OrdenDeInspeccion> ordenesInsp) {
+        Empleado logueado = this.usuarioLogueado;
+        String nombreEstacion = "";
+        String numeroSismografo = "";
+        String identificadorSismografo = "";
+        for (OrdenDeInspeccion orden : ordenesInsp) {
+            if (orden.sosDeEmpleado(logueado) && orden.sosCompletamenteRealizada()) {
+               orden.getDatosIO();
+               nombreEstacion = orden.buscarNombreEstacion();
+
+               for (Sismografo sismografo : sismografos) {
+                   if (sismografo.sosDeEstacion(orden.getEstacionSismologica())){
+                       identificadorSismografo = sismografo.getIdentificadorSismografo();
+                   }
+
+               }
+
+
+            }
         }
-        return null;
-    }
-
-    public void ingresarObservacion(OrdenDeInspeccion orden, String observacion) {
-        orden.setObservacionCierre(observacion);
-        System.out.println("Observación registrada.");
-    }
-
-    public void confirmarCierre(OrdenDeInspeccion orden) {
-        String fechaHoraActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        orden.setFechaHoraCierre(fechaHoraActual);
-        System.out.println("Orden cerrada con éxito. Fecha de cierre: " + fechaHoraActual);
     }
 }

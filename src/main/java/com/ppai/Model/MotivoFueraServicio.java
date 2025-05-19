@@ -8,11 +8,11 @@ import lombok.Setter;
 
 public class MotivoFueraServicio {
     private String comentario;
-    private String motivoTipo;
+    private TipoMotivo motivoTipo;
 
     public MotivoFueraServicio(
             String comentario,
-            String motivoTipo
+            TipoMotivo motivoTipo
     ){
         this.comentario = comentario;
         this.motivoTipo = motivoTipo;

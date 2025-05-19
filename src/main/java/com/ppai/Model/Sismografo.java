@@ -1,4 +1,5 @@
 package com.ppai.Model;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Setter
 
 public class Sismografo {
-    private String fechaAdquisicion;
+    private LocalDateTime fechaAdquisicion;
     private String identificadorSismografo;
     private String numeroDeSerie;
     private String serieTemporal;
@@ -19,7 +20,7 @@ public class Sismografo {
     private ArrayList<CambioEstado> cambioEstado;
 
     public Sismografo(
-            String fechaAdquisicion,
+            LocalDateTime fechaAdquisicion,
             String identificadorSismografo,
             String numeroDeSerie,
             String serieTemporal,
@@ -42,5 +43,9 @@ public class Sismografo {
             throw new IllegalArgumentException("Un sismografo debe tener al menos un cambio de estado.");
         }
         this.cambioEstado = cambioEstado;
+    }
+
+    public Boolean sosDeEstacion(EstacionSismologica estacionSismologica) {
+        return this.estacionSismologica.getNombre().equalsIgnoreCase(estacionSismologica.getNombre());
     }
 }

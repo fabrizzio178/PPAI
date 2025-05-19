@@ -11,16 +11,23 @@ public class Empleado {
     private String nombre;
     private String mail;
     private String telefono;
+    private Rol rol;
 
     public Empleado(
             String apellido,
             String nombre,
             String mail,
-            String telefono
+            String telefono,
+            Rol rol
     ) {
         this.apellido = apellido;
         this.nombre = nombre;
         this.mail = mail;
         this.telefono = telefono;
+        this.rol = rol;
+    }
+
+    public Boolean esTuRol(String rolConsulta) {
+        return this.rol.getNombre().equalsIgnoreCase(rolConsulta);
     }
 }

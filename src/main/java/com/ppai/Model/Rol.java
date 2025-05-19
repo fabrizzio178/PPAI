@@ -17,4 +17,8 @@ public class Rol {
         this.descripcion = descripcion;
         this.nombre = nombre;
     }
+
+    public Boolean sosResponsableReparaciones(String nombreRol) {
+        return this.nombre.equalsIgnoreCase(nombreRol);
+    }
 }
