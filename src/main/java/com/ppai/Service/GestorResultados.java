@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GestorResultados {
     private List<OrdenDeInspeccion> ordenes;
+    private List<MotivoFueraServicio> motivosSeleccionados = new ArrayList<>();
 
     public GestorResultados() {
         this.ordenes = new ArrayList<>();
@@ -31,11 +33,6 @@ public class GestorResultados {
                 new MotivoFueraServicio("Problema técnico", "TECNICAL PROBLEM")
         );
     }
-
-
-
-
-
 
     private void cargarOrdenesHardCodeadas() {
         EstacionSismologica estacion1 = new EstacionSismologica(
@@ -107,8 +104,37 @@ public class GestorResultados {
     }
 
     public void buscarMotivos(){
+        Scanner scanner = new Scanner(System.in);
+        List<MotivoFueraServicio> motivos = getListaMotivosDisponibles();
+        System.out.println("Motivos disponibles para marcar como fuera de servicio:");
+        for (int i = 0; i < motivos.size(); i++){
+            MotivoFueraServicio motivo = motivos.get(i);
+            System.out.println((i+1) + ". " + motivo.getMotivoTipo() + " - " + motivo.getComentario());
+        }
 
+        System.out.println("Seleccione los motivos (numeros separados por espacio, por ejemplo: 1 2 3):");
+        String[] entradas = scanner.nextLine().split(" ");
+
+        for (String entrada: entradas){
+            try{
+                int index = Integer.parseInt(entrada) - 1;
+                if (index >= 0 && index < motivos.size()){
+                    MotivoFueraServicio motivo = motivos.get(index);
+                    System.out.println("Ingrese comentario para '" + motivo.getMotivoTipo() +"':");
+                    String comentario = scanner.nextLine();
+                    motivo.setComentario(comentario);
+                    motivosSeleccionados.add(motivo);
+                }
+            } catch (NumberFormatException ignored){
+            }
+        }
+
+        System.out.println("Motivos seleccionados: ");
+        for (MotivoFueraServicio motivoSeleccionado: motivosSeleccionados){
+            System.out.println("- " + motivoSeleccionado.getMotivoTipo());
+        }
     }
+
 
     public void tomarConfirmacion(OrdenDeInspeccion orden) {
         String fechaHoraActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
