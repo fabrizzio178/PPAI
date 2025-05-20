@@ -1,6 +1,5 @@
 package com.ppai.controller;
 import com.ppai.app.*;
-import com.ppai.app.MiVentanaFX;
 
 
 import com.ppai.Service.GestorResultados;
@@ -8,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -27,102 +27,21 @@ public class Monitor {
 
 
     public void solicitarSeleccionOrdenesInspeccionRealizada() {
-    ArrayList<ArrayList<Object>> arrayDatosOi = this.gestor.getDatosOrdenes();
-    ArrayList<ArrayList<String>> datosConvertidos = new ArrayList<>();
+//        ArrayList<ArrayList<Object>> arrayDatosOi = this.gestor.getDatosOrdenes();
+//        for (ArrayList<Object> oi : arrayDatosOi) {
+//            int nroOrden = (int) oi.get(0);
+//            LocalDateTime fechaHoraInicio = (LocalDateTime) oi.get(1);
+//            String nombreEstacion = (String) oi.get(2);
+//            String identificadorSismografo = (String) oi.get(3);
+//
+//            System.out.println("Numero de orden: " + nroOrden + " Fecha y hora inicio: " + fechaHoraInicio + " Nombre estacion: " + nombreEstacion + " Identificador del sismografo: " + identificadorSismografo);
+//        }
     
-    if (arrayDatosOi != null) {
-        for (ArrayList<Object> fila : arrayDatosOi) {
-            ArrayList<String> filaConvertida = new ArrayList<>();
-            for (Object dato : fila) {
-                // Asegurarse de que no haya valores nulos
-                filaConvertida.add(dato != null ? dato.toString() : "N/A");
-            }
-            datosConvertidos.add(filaConvertida);
-            
-            // Imprimir para debug
-            System.out.println("Datos convertidos: " + String.join(" | ", filaConvertida));
-        }
-    }
 
-    MiVentanaFX.setDatosOrdenes(datosConvertidos);
-    MiVentanaFX.main(null);
-}
+    }
+    public void seleccionaOrdenInsp(int nroOrden) {
+        gestor.tomarSeleccionOrdenInsp(nroOrden);
+        System.out.println("Orden seleccionada: " + gestor.getOrdenSeleccionada().getNumeroOrden());
+    }
 }
 
-
-    /*public void setDatosOrdenes(ArrayList<ArrayList<String>> datosOrdenes) {
-        for (ArrayList<String> orden : datosOrdenes) {
-            String texto = String.join(" | ", orden);
-            CheckBox checkBox = new CheckBox(texto);
-            contenedorOrdenes.getChildren().add(checkBox);
-        }
-    }
-
-
-
-
-/*   // Pasar los datos a la ventana
-        MiVentanaFX.setDatosOrdenes(datosConvertidos);
-
-        // Lanzar la ventana JavaFX
-        MiVentanaFX.main(null);
-
-      */
-
-
-    /* private void solicitarSeleccionOrdenesInspeccionRealizada() {
-
-        ArrayList<ArrayList<String>> ordenes = gestor.mostrarDatosOrdenInspeccion(gestor.getOrdenesInsp());
-    }
-    */
-
-
-
-
-    // Métodos para inicializar, obtener valores, manejar eventos, etc.
-
-
-
-
-/*
-
-cerrarOrdenInsp()
-habilitarVentana()
-
-solicitarSeleccionOrdenesInspecionRealizada()
-seleccionaOrdenInsp()
-pedirObservacion()
-ingresarObservacion()
-mostrarTiposMotivos()
-solicitarSelTipoMotivo()
-seleccionaTipoMotivo()
-pedirComentario()
-tomarComentario
-solicitarConfirmacion()
-confirmaCierre()
-
-*/
-/* @FXML
-    private ComboBox<OrdenDeInspeccion> cmbOrdenesInspeccionesRealizadas;
-
-    @FXML
-    private TextArea txtObservaciones;
-
-    @FXML
-    private Label labelObservaciones;
-
-    @FXML
-    private TableView<String> grillaTipoMotivo;
-
-    @FXML
-    private ComboBox<String> cmbTipoMotivo;
-
-    @FXML
-    private TextArea txtComentario;
-
-    @FXML
-    private Label labelComentario;
-
-    @FXML
-    private Button btnConfirmacion;
-*/

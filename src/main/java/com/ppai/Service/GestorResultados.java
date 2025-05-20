@@ -41,7 +41,7 @@ public class GestorResultados {
                     "Nombre del rol " + (i + 1)
             );
 
-            // Crear Empleado
+            //Crear Empleado
             Empleado empleado = new Empleado(
                     "Apellido" + (i + 1),
                     "Nombre" + (i + 1),
@@ -117,12 +117,12 @@ public class GestorResultados {
         cambiosEstado.add(cambioEstado);
 
         EstacionSismologica estacionSismologica1 = new EstacionSismologica(
-                "123",
+                "1",
                 "",
                 LocalDateTime.now(),
-                10,
-                20,
-                "Cordoba",
+                0,
+                0,
+                "Estacion2",
                 1
         );
         Sismografo sismografo1 = new Sismografo(
@@ -135,7 +135,7 @@ public class GestorResultados {
                 estacionSismologica1,
                 estadoFueraDeServicio,
                 cambiosEstado
-                
+
         );
         EstacionSismologica estacionSismologica2 = new EstacionSismologica(
                 "456",
@@ -175,7 +175,6 @@ public class GestorResultados {
         this.buscarOrdenesInsp(this.ordenesInsp);
         this.ordenarPorFechaFinalizacion();
         this.mostrarDatos(this.ordenesInsp, this.sismografos);
-        System.out.println("NIGGA");
         monitor.solicitarSeleccionOrdenesInspeccionRealizada();
     }
 
@@ -322,3 +321,94 @@ public class GestorResultados {
 
 
 }
+/*
+package com.ppai.Service;
+
+import com.ppai.Model.*;
+import com.ppai.controller.Monitor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+@Getter
+@Setter
+public class GestorResultados {
+    // ... [atributos sin cambios] ...
+
+    public void mostrarDatos(ArrayList<OrdenDeInspeccion> ordenesInsp, ArrayList<Sismografo> todosSismografos) {
+        ArrayList<ArrayList<Object>> datosOrdenes = new ArrayList<>();
+        for (OrdenDeInspeccion orden : ordenesInsp) {
+            ArrayList<Object> datosOrden = orden.getDatosOI(todosSismografos);
+            if (datosOrden != null && !datosOrden.isEmpty()) {
+                datosOrdenes.add(datosOrden);
+                // Mostrar datos en consola
+                System.out.println("\nOrden de Inspección N°: " + datosOrden.get(0));
+                System.out.println("Fecha de Fin: " + datosOrden.get(1));
+                System.out.println("Nombre Estación: " + datosOrden.get(2));
+                System.out.println("Estado Sismógrafo: " + datosOrden.get(3));
+            }
+        }
+        this.datosOrdenes = datosOrdenes;
+        System.out.println("Total de órdenes encontradas: " + ordenesInsp.size());
+    }
+
+    public void buscarMotivos(ArrayList<TipoMotivo> tiposMotivo) {
+        System.out.println("\nMotivos disponibles para marcar como fuera de servicio:");
+        for (TipoMotivo tipo : tiposMotivo) {
+            System.out.println("- " + tipo.getNombreTipo() + ": " + tipo.getDescripcion());
+        }
+    }
+
+    public void tomarObservacion(String observacion) {
+        this.ordenSeleccionada.setObservacionCierre(observacion);
+        System.out.println("\nObservación registrada correctamente.");
+    }
+
+    public void permitirActualizarSismografoComoFS() {
+        System.out.println("\nSe ha habilitado la opción para actualizar el sismógrafo como fuera de servicio.");
+    }
+
+    public void tomarComentarios(String comentario) {
+        this.comentarios.add(comentario);
+        System.out.println("\nComentario guardado.");
+    }
+
+    public void notificarMonitor() {
+        System.out.println("\nEl monitor del CCRS ha sido notificado.");
+    }
+
+    public void enviarMail(ArrayList<Empleado> empleados) {
+        for (Empleado empleado : empleados) {
+            if (empleado.sosResponsableReparaciones()) {
+                String mail = empleado.obtenerMail();
+                this.mailsEmpleados.add(mail);
+                System.out.println("Correo enviado a: " + mail);
+            }
+        }
+        notificarMonitor();
+    }
+
+    public void cerrarOrdenInspeccion() {
+        ordenSeleccionada.cerrar(fechaHoraActual, estadoOrdenInspeccionCerrada);
+        System.out.println("\nOrden de inspección cerrada correctamente.");
+    }
+
+    public void ponerSismografoFueraDeServicio() {
+        if (ordenSeleccionada != null) {
+            for (Sismografo sismografo : sismografos) {
+                if (ordenSeleccionada.getEstacionSismologica().sosMiSismografo(sismografo)) {
+                    sismografo.fueraDeServicio(this.tiposMotivosFueraDeServicio, this.comentarios, this.fechaHoraActual, this.estadoSismografoFueraDeServicio, buscarRIlogueado());
+                    System.out.println("\nEl sismógrafo fue puesto fuera de servicio correctamente.");
+                    break;
+                }
+            }
+        }
+    }
+
+    // Puedes agregar prints similares en otros métodos según los necesites.
+}
+
+ */
