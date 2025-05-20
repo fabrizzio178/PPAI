@@ -202,12 +202,15 @@ public class GestorResultados {
     }
     // 4
     public void mostrarDatos(ArrayList<OrdenDeInspeccion> ordenesInsp, ArrayList<Sismografo> todosSismografos) {
-        ArrayList<ArrayList<Object>> datosOrdenes = new ArrayList<>();  //PARAMETROS: lista de las ordenes filtradas arriba, lista de todos los sismografos
+        ArrayList<ArrayList<Object>> datosOrdenes = new ArrayList<>();
         for (OrdenDeInspeccion orden : ordenesInsp) {
-            datosOrdenes.add(orden.getDatosOI(todosSismografos));
+            ArrayList<Object> datosOrden = orden.getDatosOI(todosSismografos);
+            if (datosOrden != null && !datosOrden.isEmpty()) {
+                datosOrdenes.add(datosOrden);
+            }
         }
-        System.out.println(ordenesInsp.size() + " OI encontradas.");
         this.datosOrdenes = datosOrdenes;
+        System.out.println(ordenesInsp.size() + " OI encontradas.");
     }
     // 5
     public void tomarSeleccionOrdenInsp(int numeroOrden) {

@@ -30,15 +30,20 @@ public class Monitor {
     ArrayList<ArrayList<Object>> arrayDatosOi = this.gestor.getDatosOrdenes();
     ArrayList<ArrayList<String>> datosConvertidos = new ArrayList<>();
     
-    for (ArrayList<Object> fila : arrayDatosOi) {
-        ArrayList<String> filaConvertida = new ArrayList<>();
-        for (Object dato : fila) {
-            filaConvertida.add(dato.toString());
+    if (arrayDatosOi != null) {
+        for (ArrayList<Object> fila : arrayDatosOi) {
+            ArrayList<String> filaConvertida = new ArrayList<>();
+            for (Object dato : fila) {
+                // Asegurarse de que no haya valores nulos
+                filaConvertida.add(dato != null ? dato.toString() : "N/A");
+            }
+            datosConvertidos.add(filaConvertida);
+            
+            // Imprimir para debug
+            System.out.println("Datos convertidos: " + String.join(" | ", filaConvertida));
         }
-        datosConvertidos.add(filaConvertida);
     }
 
-    // Mover estas llamadas fuera del bucle
     MiVentanaFX.setDatosOrdenes(datosConvertidos);
     MiVentanaFX.main(null);
 }
