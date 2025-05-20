@@ -3,29 +3,32 @@ package com.ppai.Model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
+
 public class EstacionSismologica {
-    private String codigoEstacion;
+    private Integer codigoEstacion;
     private String documentoCertificacionAdq;
-    private String fechaSolicitudCerificacion;
-    private Integer latitud;
-    private Integer longitud;
+    private LocalDateTime fechaSolicitudAdquisicion;
+    private double latitud;
+    private double longitud;
     private String nombre;
     private Integer numeroCertificacionAdquisicion;
 
-
-    public EstacionSismologica(
-            String codigoEstacion,
+    public EstacionSismologica (
+            Integer codigoEstacion,
             String documentoCertificacionAdq,
-            String fechaSolicitudCerificacion,
-            Integer latitud, Integer longitud,
+            LocalDateTime fechaSolicitudAdquisicion,
+            double latitud,
+            double longitud,
             String nombre,
             Integer numeroCertificacionAdquisicion
-    ){
+    ) {
         this.codigoEstacion = codigoEstacion;
         this.documentoCertificacionAdq = documentoCertificacionAdq;
-        this.fechaSolicitudCerificacion = fechaSolicitudCerificacion;
+        this.fechaSolicitudAdquisicion = fechaSolicitudAdquisicion;
         this.latitud = latitud;
         this.longitud = longitud;
         this.nombre = nombre;

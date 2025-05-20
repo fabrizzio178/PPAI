@@ -7,14 +7,14 @@ import lombok.Setter;
 @Setter
 
 public class MotivoFueraServicio {
-    private String comentario;
-    private String motivoTipo;
+    private String descripcion;
+    private TipoMotivo tipoMotivo;
 
     public MotivoFueraServicio(
-            String comentario,
-            String motivoTipo
-    ){
-        this.comentario = comentario;
-        this.motivoTipo = motivoTipo;
+            String descripcion,
+            TipoMotivo tipoMotivo
+    ) {
+        this.descripcion = descripcion;
+        this.tipoMotivo = tipoMotivo;
     }
 }

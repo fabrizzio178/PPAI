@@ -13,7 +13,7 @@ public class Estado {
     public Estado(
             String ambito,
             String nombreEstado
-    ){
+    ) {
         this.ambito = ambito;
         this.nombreEstado = nombreEstado;
     }

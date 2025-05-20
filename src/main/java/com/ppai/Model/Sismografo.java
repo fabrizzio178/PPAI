@@ -1,4 +1,5 @@
 package com.ppai.Model;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import lombok.Getter;
@@ -8,27 +9,30 @@ import lombok.Setter;
 @Setter
 
 public class Sismografo {
-    private String fechaAdquisicion;
-    private String identificadorSismografo;
+    private LocalDateTime fechaAdquisicion;
+    private Integer identificadorSismografo;
     private String numeroDeSerie;
     private String serieTemporal;
     private String modelo;
-    private String reparacion;
+    private Boolean reparacion; // está o no en reparacion
     private EstacionSismologica estacionSismologica;
     private Estado estadoActual;
-    private ArrayList<CambioEstado> cambioEstado;
-
+    private ArrayList<CambioEstado> cambiosEstado;
+    
     public Sismografo(
-            String fechaAdquisicion,
-            String identificadorSismografo,
+            LocalDateTime fechaAdquisicion,
+            Integer identificadorSismografo,
             String numeroDeSerie,
             String serieTemporal,
             String modelo,
-            String reparacion,
+            Boolean reparacion,
             EstacionSismologica estacionSismologica,
             Estado estadoActual,
-            ArrayList<CambioEstado> cambioEstado
-    ){
+            ArrayList<CambioEstado> cambiosEstado
+    ) {
+        if (cambiosEstado == null || cambiosEstado.isEmpty()) {
+            throw new IllegalArgumentException("Un sismografo debe tener como minimo un cambio de estado");
+        } // Este if es por la relacion 1..*
         this.fechaAdquisicion = fechaAdquisicion;
         this.identificadorSismografo = identificadorSismografo;
         this.numeroDeSerie = numeroDeSerie;
@@ -37,10 +41,6 @@ public class Sismografo {
         this.reparacion = reparacion;
         this.estacionSismologica = estacionSismologica;
         this.estadoActual = estadoActual;
-
-        if (cambioEstado == null || cambioEstado.isEmpty()) {
-            throw new IllegalArgumentException("Un sismografo debe tener al menos un cambio de estado.");
-        }
-        this.cambioEstado = cambioEstado;
+        this.cambiosEstado = cambiosEstado;
     }
 }

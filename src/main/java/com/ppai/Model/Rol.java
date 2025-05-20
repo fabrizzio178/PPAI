@@ -7,14 +7,11 @@ import lombok.Setter;
 @Setter
 
 public class Rol {
-    private String descripcion;
+    private String descripcionRol;
     private String nombre;
 
-    public Rol(
-            String descripcion,
-            String nombre
-    ){
-        this.descripcion = descripcion;
+    public Rol(String descripcionRol, String nombre) {
+        this.descripcionRol = descripcionRol;
         this.nombre = nombre;
     }
 }

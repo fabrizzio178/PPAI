@@ -10,20 +10,24 @@ public class Usuario {
     private String contrasena;
     private String nombreUsuario;
     private String perfil;
-    private String suscripcion;
+    private Boolean suscripcion; // tiene o no una suscripcion
     private Empleado empleado;
 
     public Usuario(
             String contrasena,
             String nombreUsuario,
             String perfil,
-            String suscripcion,
+            Boolean suscripcion,
             Empleado empleado
-    ){
+    ) {
         this.contrasena = contrasena;
         this.nombreUsuario = nombreUsuario;
         this.perfil = perfil;
         this.suscripcion = suscripcion;
         this.empleado = empleado;
+    }
+
+    public Empleado getRILogueado () {
+        return this.empleado;
     }
 }

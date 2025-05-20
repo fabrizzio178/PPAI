@@ -2,32 +2,33 @@ package com.ppai.Model;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Getter
 @Setter
 
-// private ArrayList<Clase> atributo
-
 public class CambioEstado {
-    private String fechaHoraFin;
-    private String fechaHoraInicio;
+    private LocalDateTime fechaHoraFin;
+    private LocalDateTime fechaHoraInicio;
     private Estado estado;
-    private Empleado responsableInspeccion;
-    private ArrayList<MotivoFueraServicio> motivoFueraServicio;
+    private ArrayList<MotivoFueraServicio> motivoFueraServicio;  // 0 o MAS MOTIVOS FUERA SERVICIO
+    private Empleado responsable;
+
 
     public CambioEstado(
-            String fechaHoraFin,
-            String fechaHoraInicio,
+            LocalDateTime fechaHoraInicio,
+            LocalDateTime fechaHoraFin,
             Estado estado,
-            Empleado responsableInspeccion,
-            ArrayList<MotivoFueraServicio> motivoFueraServicio
-    ){
-        this.fechaHoraFin = fechaHoraFin;
+            Empleado responsable
+    )
+    {
         this.fechaHoraInicio = fechaHoraInicio;
+        this.fechaHoraFin = fechaHoraFin;
         this.estado = estado;
-        this.responsableInspeccion = responsableInspeccion;
-        this.motivoFueraServicio = motivoFueraServicio;
+        this.motivoFueraServicio = new ArrayList<>();
+        this.responsable = responsable;
     }
 }
 
