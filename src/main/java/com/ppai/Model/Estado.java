@@ -17,4 +17,12 @@ public class Estado {
         this.ambito = ambito;
         this.nombreEstado = nombreEstado;
     }
+
+    public Boolean sosAmbitoOrdenInspeccion() {
+        return this.ambito.equalsIgnoreCase("Orden Inspeccion");
+    }
+
+    public Boolean sosCompletamenteRealizada() {
+        return this.nombreEstado.equalsIgnoreCase("Completamente Realizada");
+    }
 }

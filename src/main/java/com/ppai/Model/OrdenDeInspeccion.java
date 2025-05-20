@@ -41,5 +41,11 @@ public class OrdenDeInspeccion {
         this.empleado = empleado;
     }
 
+    public Boolean sosDeEmpleado (Empleado empleado) {
+        return this.empleado == empleado;
+    }
 
+    public Boolean sosCompletamenteRealizada() {
+        return this.estado.sosAmbitoOrdenInspeccion() && this.estado.sosCompletamenteRealizada();
+    }
 }

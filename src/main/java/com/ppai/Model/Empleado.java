@@ -26,4 +26,6 @@ public class Empleado {
         this.telefono = telefono;
         this.rol = rol;
     }
+
+
 }

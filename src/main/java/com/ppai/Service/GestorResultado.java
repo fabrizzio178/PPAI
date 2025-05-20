@@ -5,6 +5,7 @@ import com.ppai.Model.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class GestorResultado {
     // Arrays con todas las instancias de cada clase que el gestor conoce
@@ -40,16 +41,37 @@ public class GestorResultado {
 
     //Atributos del gestor
     private Empleado usuarioLogueado;
+    private ArrayList<OrdenDeInspeccion> ordenesInsp;
 
 
     public void opCerrarOrdenInspeccion() {
         this.hardcodearSesion();
 
         this.buscarRILogueado();
+        this.buscarOrdenesInsp();
     }
 
     public void buscarRILogueado() {
         this.usuarioLogueado = sesionActual.getUsuarioLogueado();
-        System.out.println("PENIS");
     }
+
+    public void buscarOrdenesInsp() {
+        for(OrdenDeInspeccion orden : todosOrdenInspeccion) {
+            if(orden.sosDeEmpleado(this.usuarioLogueado) && orden.sosCompletamenteRealizada()){
+                ordenesInsp.add(orden);
+            }
+        }
+    }
+
+    public void ordenarPorFechaFinalizaion() {
+        ordenesInsp.sort(Comparator.comparing(OrdenDeInspeccion::getFechaHoraFinalizacion));
+    }
+
+    public void mostrarDatos () {
+        for(OrdenDeInspeccion orden : ordenesInsp) {
+        
+        }
+    }
+
+
 }
