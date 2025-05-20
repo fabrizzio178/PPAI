@@ -37,9 +37,6 @@ public class Usuario {
         return this.empleado.getNombre() + " " + this.empleado.getApellido();
     }
 
-    public Boolean estasLogueado() {
-        return true;
-    }
 
     public Empleado getRILogueado() {
         return this.empleado;

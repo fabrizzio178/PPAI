@@ -50,7 +50,7 @@ public class OrdenDeInspeccion {
     }
 
     public Boolean sosCompletamenteRealizada() {
-        return this.estado.getNombreEstado().equalsIgnoreCase("completamente realizada");
+        return this.estado.sosAmbitoOrdenInspeccion() && this.estado.sosCompletamenteRealizada();
     }
 
     public ArrayList<Object> getDatosOI(ArrayList<Sismografo> todosSismografos) {
@@ -59,7 +59,7 @@ public class OrdenDeInspeccion {
         datos.add(this.fechaHoraFinalizacion);
         datos.add(this.estacionSismologica.getNombre());
         for (Sismografo sismografo : todosSismografos) {
-            if (sismografo.getEstacionSismologica().getNombre().equalsIgnoreCase(this.estacionSismologica.getNombre())) {
+            if (this.estacionSismologica.sosMiSismografo(sismografo)) {
                 datos.add(sismografo.getIdentificadorSismografo());
                 break;
             }
@@ -67,26 +67,9 @@ public class OrdenDeInspeccion {
         return datos;
     };
 
-    public String buscarNombreEstacion() {
-        return this.estacionSismologica.getNombre();
-    }
 
-    public void setFechaHoraCierre() {
-        this.fechaHoraCierre = LocalDateTime.now();
-    }
-
-    public void setEstado(String nombreEstado, List<Estado> estados) {  //nombre del estado, lista con todas las instancias de Estado
-        for (Estado estado : estados) {
-            if (estado.getNombreEstado().equalsIgnoreCase(nombreEstado)) {
-                this.estado = estado;
-                break;
-            }
-        }
-    }
-
-    public void cerrar() {
-        List<Estado> estados = new ArrayList<>(); //creo lista vacia de estados porque no se como CARAJO acceder a todos los estados desde acá
-        this.setFechaHoraCierre();
-        this.setEstado("Cerrada", estados);
+    public void cerrar(LocalDateTime fechaHoraCierre, Estado estadoCierre) {
+        this.setFechaHoraCierre(fechaHoraCierre);
+        this.setEstado(estadoCierre);
     }
 }

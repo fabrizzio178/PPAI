@@ -28,7 +28,7 @@ public class EstacionSismologica {
             Integer latitud, Integer longitud,
             String nombre,
             Integer numeroCertificacionAdquisicion
-    ){
+    ) {
         this.codigoEstacion = codigoEstacion;
         this.documentoCertificacionAdq = documentoCertificacionAdq;
         this.fechaSolicitudCerificacion = fechaSolicitudCerificacion;
@@ -38,13 +38,10 @@ public class EstacionSismologica {
         this.numeroCertificacionAdquisicion = numeroCertificacionAdquisicion;
         estacionesSismologicas.add(this);
     }
-    public String buscarNumeroSismografo(Sismografo sismografo) {
-        if(sismografo != null){
-            return sismografo.getIdentificadorSismografo();
-        } else {
-            return "Sin sismografo asignado";
-        }
+
+
+    public Boolean sosMiSismografo(Sismografo sismografo) {
+        return this.nombre.equalsIgnoreCase(sismografo.getEstacionSismologica().getNombre());
     }
+
 }
-
-

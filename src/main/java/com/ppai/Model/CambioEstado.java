@@ -53,13 +53,12 @@ public class CambioEstado {
       */
 
     public void cargarMotivos(List<TipoMotivo> tiposMotivosSeleccionados, List<String> comentarios) {
-
         for (int i = 0; i < tiposMotivosSeleccionados.size(); i++ ) {
             TipoMotivo tipo = tiposMotivosSeleccionados.get(i);
             String comentario = comentarios.get(i);
             MotivoFueraServicio motivo = new MotivoFueraServicio(comentario,tipo);
             this.motivoFueraServicio.add(motivo);
-        };
+        }
     }
 
 }

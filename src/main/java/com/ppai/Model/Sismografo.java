@@ -48,8 +48,16 @@ public class Sismografo {
         this.cambioEstado = cambioEstado;
     }
 
-    public Boolean sosDeEstacion(EstacionSismologica estacionSismologica) {
-        return this.estacionSismologica.getNombre().equalsIgnoreCase(estacionSismologica.getNombre());
-    }
+    public void fueraDeServicio(ArrayList<TipoMotivo> motivos, ArrayList<String> comentarios, LocalDateTime fechaHoraInicio, Estado estadoCerrada, Empleado responsable) {
+        // Cierra el cambio de estado actual
+        for (CambioEstado cambio : cambioEstado) {
+            if (cambio.sosActual()) {
+                cambio.setFechaHoraFin(fechaHoraInicio); // Le setea su fechahora
+            }
+        }
 
+        CambioEstado nuevoEstado = new CambioEstado(null, fechaHoraInicio, estadoCerrada, responsable, null);
+        nuevoEstado.cargarMotivos(motivos, comentarios);
+        cambioEstado.add(nuevoEstado);
+    }
 }

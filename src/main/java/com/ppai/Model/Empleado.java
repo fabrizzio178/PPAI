@@ -36,4 +36,6 @@ public class Empleado {
     public Boolean esTuRol(String rolConsulta) {
         return this.rol.getNombre().equalsIgnoreCase(rolConsulta);
     }
+
+
 }
