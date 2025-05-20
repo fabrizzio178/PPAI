@@ -1,6 +1,7 @@
 package com.ppai.Service;
 import com.ppai.Model.*;
 
+import com.ppai.controller.Monitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,26 +15,170 @@ import java.util.Comparator;
 
 public class GestorResultados {
     private Usuario usuarioLogueado; // usado funcion1  ----> guarda el puntero al empleado
-    private ArrayList<OrdenDeInspeccion> ordenesInsp; // usado fucion 1-2-3-5 ---> guarda las Ord de Insp del empleado y completamente realizadas
+    private ArrayList<OrdenDeInspeccion> ordenesInsp; // usado fucion 1-2-3-5 ---> guarda las Ord de Insp del empleado y completamente realizadas //PREDEFINIDO
     private OrdenDeInspeccion ordenSeleccionada; // usado funcion 5-7-18-19 ----> guarda 1 OI seleccionada por el RI
     private ArrayList<ArrayList<Object>> datosOrdenes;
     private String observacion;
-    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicio; // usado funcion 10-14 ----> guarda 1 o mas motivos seleccionado por el usuario
+    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicio; // usado funcion 10-14-19----> guarda 1 o mas motivos seleccionado por el usuario
     private Estado estadoOrdenInspeccionCerrada; // usado funcion  15-18 ----> guarda el nombre del estado de la OI (cerrada)
-    private ArrayList<String> comentarios; // usado funcion 11 ----> guarda 1 comntario ingresado por el usuario para 1 tipo seleccionado
+    private ArrayList<String> comentarios; // usado funcion 11-19 ----> guarda 1 comntario ingresado por el usuario para 1 tipo seleccionado
     private Boolean confirmacion;
-    private LocalDateTime fechaHoraActual; // usado funcion 16-18 ----> guarda la fecha y la hora actual
-    private Rol rolEmpleado; // Limpiar
-    private Estado estadoSismografoFueraDeServicio; // usado funcion 17 ----> guarda el nombre del estado del Sismografo (fuera de servicio)
-    private ArrayList<String> mailsEmpleados;
-    private ArrayList<Usuario> usuarios; //TODOS LOS USUARIOS
-    private ArrayList<Sismografo> sismografos; //TODOS LOS SISMOGRAFOS usado funcion 19
-    private Sesion sesion;
+    private LocalDateTime fechaHoraActual; // usado funcion 16-18-19 ----> guarda la fecha y la hora actual
+    private Estado estadoSismografoFueraDeServicio; // usado funcion 17-19 ----> guarda el nombre del estado del Sismografo (fuera de servicio)
+    private ArrayList<String> mailsEmpleados; //PREFEDINIDO
+    private ArrayList<Usuario> usuarios; //TODOS LOS USUARIOS //PREFEDINIDO
+    private ArrayList<Sismografo> sismografos; //TODOS LOS SISMOGRAFOS usado funcion 19 //PREFEDINIDO
+    private Sesion sesion; //PREFEDINIDO
+    private ArrayList<Empleado> empleados; //PREFEDINIDO
+    private Monitor monitor;
+
+    public void hardcodearUsuarios() {
+        this.usuarios = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            // Crear Rol
+            Rol rol = new Rol(
+                    "Descripción del rol " + (i + 1),
+                    "Nombre del rol " + (i + 1)
+            );
+
+            // Crear Empleado
+            Empleado empleado = new Empleado(
+                    "Apellido" + (i + 1),
+                    "Nombre" + (i + 1),
+                    "empleado" + (i + 1) + "@mail.com",
+                    "351-" + (i + 1000),
+                    rol
+            );
+
+            // Crear Usuario
+            Usuario usuario = new Usuario(
+                    "contraseña" + (i + 1),
+                    "usuario" + (i + 1),
+                    "perfil" + (i + 1),
+                    "suscripcion" + (i + 1),
+                    empleado
+            );
+
+
+            usuarios.add(usuario);
+        }
+        this.sesion = new Sesion(null, null, this.usuarios.get(0));;
+    }
+
+
+    public void hardcodearOrdenesDeInspeccion() {
+        this.ordenesInsp = new ArrayList<>();
+
+        Estado estadoCerrada = new Estado("OrdenInspeccion", "completamente realizada");
+
+        for (int i = 0; i < 3; i++) {
+            OrdenDeInspeccion ord = new OrdenDeInspeccion(
+                    i,
+                    null,
+                    null,
+                    LocalDateTime.now(),
+                    "obs " + i,
+                    new EstacionSismologica(
+                            "" + i,
+                            "",
+                            LocalDateTime.now(),
+                            0,
+                            0,
+                            "Estación " + (i + 1),
+                            1
+                    ),
+                    estadoCerrada,
+                    new Empleado(
+                            "Apellido" + i,
+                            "Nombre" + i,
+                            "empleado" + i + "@mail.com",
+                            "351-0000" + i,
+                            null
+                    )
+            );
+
+            // 🚨 Esto es lo que faltaba
+            this.ordenesInsp.add(ord);
+        }
+
+    }
+
+    public void hardCodearSismografos() {
+        Estado estadoFueraDeServicio = new Estado("Sismografo", "Fuera de Servicio");
+        ArrayList<CambioEstado> cambiosEstado = new ArrayList<>();
+
+        CambioEstado cambioEstado = new CambioEstado(
+                null,
+                LocalDateTime.now(),
+                estadoFueraDeServicio,
+                this.usuarios.get(1).getRILogueado(),
+                null
+        );
+
+        cambiosEstado.add(cambioEstado);
+
+        EstacionSismologica estacionSismologica1 = new EstacionSismologica(
+                "123",
+                "",
+                LocalDateTime.now(),
+                10,
+                20,
+                "Cordoba",
+                1
+        );
+        Sismografo sismografo1 = new Sismografo(
+                null,
+                "1",
+                "1000",
+                "",
+                "S1000",
+                "",
+                estacionSismologica1,
+                estadoFueraDeServicio,
+                cambiosEstado
+                
+        );
+        EstacionSismologica estacionSismologica2 = new EstacionSismologica(
+                "456",
+                "",
+                LocalDateTime.now(),
+                30,
+                40,
+                "Buenos Aires",
+                2
+        );
+        Sismografo sismografo2 = new Sismografo(
+                null,
+                "2",
+                "1001",
+                "",
+                "S2000",
+                "",
+                estacionSismologica2,
+                estadoFueraDeServicio,
+                cambiosEstado
+
+        );
+    }
+
+
+    public void opCerrarOrdenInspeccion() {
+        this.hardcodearUsuarios();
+        this.hardcodearOrdenesDeInspeccion();
+        this.hardCodearSismografos();
+
+
+        this.buscarRIlogueado();
+        this.buscarOrdenesInsp(this.ordenesInsp);
+        this.ordenarPorFechaFinalizacion();
+        this.mostrarDatos(this.ordenesInsp, this.sismografos);
+        System.out.println("NIGGA");
+        monitor.solicitarSeleccionOrdenesInspeccionRealizada();
+    }
 
     // 1era función que busca el RI logueado
     public Empleado buscarRIlogueado() {
-        Usuario usuario = sesion.getUsuario();
-        return usuario.getRILogueado(); //CAMBIAR DIAG SECUENCIA  GESTOR -> SESION -> USUARIO -> EMPLEADO
+        return sesion.getUsuarioLogueado();
     }
 
 
@@ -61,6 +206,7 @@ public class GestorResultados {
         for (OrdenDeInspeccion orden : ordenesInsp) {
             datosOrdenes.add(orden.getDatosOI(todosSismografos));
         }
+        System.out.println(ordenesInsp.size() + " OI encontradas.");
         this.datosOrdenes = datosOrdenes;
     }
     // 5
@@ -150,9 +296,23 @@ public class GestorResultados {
             }
         }
     }
-
-    public void enviarMail(){
-
+    public void notificarMonitor(){
+        System.out.println("Monitor CCRS Notificado.");
     }
+    //20
+    public void enviarMail(ArrayList<Empleado> empleados){
+        for (Empleado empleado : empleados) {
+            if (empleado.sosResponsableReparaciones()){
+                String mail = empleado.obtenerMail();
+                // agregamos el mail al array de mails
+                this.mailsEmpleados.add(mail);
+            }
+        }
+        // Esto despues se cambia pero lo dejamos para que haya consistencia
+
+        System.out.println("Mails enviado a los responsables de reparaciones.");
+        notificarMonitor();
+    }
+
 
 }

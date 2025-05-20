@@ -37,5 +37,15 @@ public class Empleado {
         return this.rol.getNombre().equalsIgnoreCase(rolConsulta);
     }
 
+    public boolean sosResponsableReparaciones() {
+        if (this.rol != null) {
+            return this.rol.sosResponsableReparaciones();
+        }
 
+        return false;
+
+    }
+    public String obtenerMail(){
+        return this.mail;
+    }
 }

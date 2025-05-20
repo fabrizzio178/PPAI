@@ -34,7 +34,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -91,7 +90,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>app.MiVentanaFX</mainClass> <!-- Cambia esto por tu clase principal -->
+                    <mainClass>com.ppai.app.MiVentanaFX</mainClass> <!-- Cambia esto por tu clase principal -->
                 </configuration>
             </plugin>
         </plugins>

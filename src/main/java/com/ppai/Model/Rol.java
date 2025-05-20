@@ -24,7 +24,7 @@ public class Rol {
         roles.add(this);
     }
 
-    public Boolean sosResponsableReparaciones(String nombreRol) {
-        return this.nombre.equalsIgnoreCase(nombreRol);
+    public Boolean sosResponsableReparaciones() {
+        return this.nombre.equalsIgnoreCase("Responsable de reparaciones");
     }
 }

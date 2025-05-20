@@ -33,9 +33,6 @@ public class Usuario {
         usuarios.add(this);
     }
 
-    public String buscarEmpleado() {
-        return this.empleado.getNombre() + " " + this.empleado.getApellido();
-    }
 
 
     public Empleado getRILogueado() {

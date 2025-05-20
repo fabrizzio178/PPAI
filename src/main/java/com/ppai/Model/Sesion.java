@@ -18,4 +18,8 @@ public class Sesion {
         this.fechaHoraInicio = fechaHoraInicio;
         this.usuario = usuario;
     }
+
+    public Empleado getUsuarioLogueado() {
+        return this.usuario.getRILogueado();
+    }
 }
