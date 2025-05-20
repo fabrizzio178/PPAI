@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="MiUnidadPersistencia" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Lista de tus entidades -->
+        <class>com.ppai.Model.CambioEstado</class>
+        <class>com.ppai.Model.Empleado</class>
+        <class>com.ppai.Model.EstacionSismologica</class>
+        <class>com.ppai.Model.Estado</class>
+        <class>com.ppai.Model.MotivoFueraServicio</class>
+        <class>com.ppai.Model.OrdenDeInspeccion</class>
+        <class>com.ppai.Model.Rol</class>
+        <class>com.ppai.Model.Sesion</class>
+        <class>com.ppai.Model.Sismografo</class>
+        <class>com.ppai.Model.TipoMotivo</class>
+        <class>com.ppai.Model.Usuario</class>
+
+        <properties>
+            <!-- Propiedades de conexión a MySQL -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:src/main/resources/db/ppai.db"/>
+            <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
+
+            <!-- Propiedades de Hibernate -->
+            <property name="hibernate.connection.foreign_keys" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>

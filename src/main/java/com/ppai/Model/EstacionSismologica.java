@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -33,6 +34,17 @@ public class EstacionSismologica {
         this.longitud = longitud;
         this.nombre = nombre;
         this.numeroCertificacionAdquisicion = numeroCertificacionAdquisicion;
+    }
+
+    public ArrayList<String> getNombreEstacion(ArrayList<Sismografo> todosSismografos) {
+        ArrayList<String> resultado = new ArrayList<>();
+        for (Sismografo sismografo : todosSismografos) {
+            if (sismografo.sosMiSismografo(this)) {
+                resultado.add(this.getNombre());
+                resultado.add(sismografo.getIdentificadorSismografo());
+            }
+        }
+        return null;
     }
 }
 

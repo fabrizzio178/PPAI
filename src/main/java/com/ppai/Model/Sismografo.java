@@ -10,7 +10,7 @@ import lombok.Setter;
 
 public class Sismografo {
     private LocalDateTime fechaAdquisicion;
-    private Integer identificadorSismografo;
+    private String identificadorSismografo;
     private String numeroDeSerie;
     private String serieTemporal;
     private String modelo;
@@ -21,7 +21,7 @@ public class Sismografo {
     
     public Sismografo(
             LocalDateTime fechaAdquisicion,
-            Integer identificadorSismografo,
+            String identificadorSismografo,
             String numeroDeSerie,
             String serieTemporal,
             String modelo,
@@ -42,5 +42,9 @@ public class Sismografo {
         this.estacionSismologica = estacionSismologica;
         this.estadoActual = estadoActual;
         this.cambiosEstado = cambiosEstado;
+    }
+
+    public Boolean sosMiSismografo(EstacionSismologica estacion) {
+        return this.estacionSismologica == estacion;
     }
 }
