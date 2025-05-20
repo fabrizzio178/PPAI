@@ -14,7 +14,7 @@ import java.util.Comparator;
 @Setter
 
 public class GestorResultados {
-    private Usuario usuarioLogueado; // usado funcion1  ----> guarda el puntero al empleado
+    private Empleado usuarioLogueado; // usado funcion1  ----> guarda el puntero al empleado
     private ArrayList<OrdenDeInspeccion> ordenesInsp; // usado fucion 1-2-3-5 ---> guarda las Ord de Insp del empleado y completamente realizadas //PREDEFINIDO
     private OrdenDeInspeccion ordenSeleccionada; // usado funcion 5-7-18-19 ----> guarda 1 OI seleccionada por el RI
     private ArrayList<ArrayList<Object>> datosOrdenes;
@@ -69,14 +69,13 @@ public class GestorResultados {
     public void hardcodearOrdenesDeInspeccion() {
         this.ordenesInsp = new ArrayList<>();
 
-        Estado estadoCerrada = new Estado("OrdenInspeccion", "completamente realizada");
-
+        Estado estadoCerrada = new Estado("Orden Inspeccion", "completamente realizada");
         for (int i = 0; i < 3; i++) {
             OrdenDeInspeccion ord = new OrdenDeInspeccion(
                     i,
+                    LocalDateTime.now().plusDays(i),
                     null,
                     null,
-                    LocalDateTime.now(),
                     "obs " + i,
                     new EstacionSismologica(
                             "" + i,
@@ -89,8 +88,8 @@ public class GestorResultados {
                     ),
                     estadoCerrada,
                     new Empleado(
-                            "Apellido" + i,
-                            "Nombre" + i,
+                            "Apellido1",
+                            "Nombre1",
                             "empleado" + i + "@mail.com",
                             "351-0000" + i,
                             null
@@ -159,13 +158,17 @@ public class GestorResultados {
                 cambiosEstado
 
         );
+        this.sismografos = new ArrayList<>();
+        this.sismografos.add(sismografo1);
+        this.sismografos.add(sismografo2);
     }
 
 
     public void opCerrarOrdenInspeccion() {
         this.hardcodearUsuarios();
-        this.hardcodearOrdenesDeInspeccion();
         this.hardCodearSismografos();
+        this.hardcodearOrdenesDeInspeccion();
+
 
 
         this.buscarRIlogueado();
