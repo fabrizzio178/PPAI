@@ -54,8 +54,8 @@ public class SismografoDAO {
         return null;
     }
 
-    public List<Sismografo> getAllSismografos() throws SQLException {
-        List<Sismografo> sismografos = new ArrayList<>();
+    public ArrayList<Sismografo> getAllSismografos() throws SQLException {
+        ArrayList<Sismografo> sismografos = new ArrayList<>();
         String query = "SELECT id, fecha_adquisicion, identificador_sismografo, numero_serie, " +
                 "serie_temporal, modelo, reparacion, estacion_sismologica_id, estado_actual_id " +
                 "FROM sismografo";

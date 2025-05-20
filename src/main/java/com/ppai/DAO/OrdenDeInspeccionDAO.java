@@ -21,8 +21,8 @@ public class OrdenDeInspeccionDAO {
         this.empleadoDAO = new EmpleadoDAO();
     }
 
-    public List<OrdenDeInspeccion> getAllOrdenes() throws SQLException {
-        List<OrdenDeInspeccion> ordenes = new ArrayList<>();
+    public ArrayList<OrdenDeInspeccion> getAllOrdenes() throws SQLException {
+        ArrayList<OrdenDeInspeccion> ordenes = new ArrayList<>();
         String query = "SELECT id, numero_orden, fecha_hora_finalizacion, fecha_hora_cierre, " +
                 "fecha_hora_inicio, observacion_cierre, tarea_asignada, estacion_sismologica_id, " +
                 "estado_id, empleado_id FROM orden_inspeccion";
@@ -38,8 +38,8 @@ public class OrdenDeInspeccionDAO {
 
                 OrdenDeInspeccion orden = new OrdenDeInspeccion(
                         rs.getInt("numero_orden"),
-                        rs.getTimestamp("fecha_hora_finalizacion").toLocalDateTime(),
-                        rs.getTimestamp("fecha_hora_cierre").toLocalDateTime(),
+                        rs.getTimestamp("fecha_hora_finalizacion") != null ? rs.getTimestamp("fecha_hora_finalizacion").toLocalDateTime() : null,
+                        rs.getTimestamp("fecha_hora_cierre") != null ? rs.getTimestamp("fecha_hora_cierre").toLocalDateTime() : null,
                         rs.getTimestamp("fecha_hora_inicio").toLocalDateTime(),
                         rs.getString("observacion_cierre"),
                         rs.getString("tarea_asignada"),

@@ -44,7 +44,7 @@ public class EstacionSismologica {
                 resultado.add(sismografo.getIdentificadorSismografo());
             }
         }
-        return null;
+        return resultado;
     }
 }
 

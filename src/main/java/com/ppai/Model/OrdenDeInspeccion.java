@@ -6,6 +6,7 @@ import lombok.Setter;
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -44,11 +45,10 @@ public class OrdenDeInspeccion {
     }
 
     public Boolean sosDeEmpleado (Empleado empleado) {
-        return this.empleado == empleado;
+        return Objects.equals(this.empleado.getNombre(), empleado.getNombre()) && Objects.equals(this.empleado.getApellido(), empleado.getApellido());
     }
 
     public Boolean sosCompletamenteRealizada() {
-        System.out.println("HOLA");
         return this.estado.sosAmbitoOrdenInspeccion() && this.estado.sosCompletamenteRealizada();
 
     }

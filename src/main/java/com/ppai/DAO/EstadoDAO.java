@@ -9,8 +9,8 @@ import java.util.List;
 
 public class EstadoDAO {
 
-    public List<Estado> getAllEstados() throws SQLException {
-        List<Estado> estados = new ArrayList<>();
+    public ArrayList<Estado> getAllEstados() throws SQLException {
+        ArrayList<Estado> estados = new ArrayList<>();
         String query = "SELECT id, ambito, nombre_estado FROM estado";
 
         try (Connection conn = DatabaseConnection.getConnection();

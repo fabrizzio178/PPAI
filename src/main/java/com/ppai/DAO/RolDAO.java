@@ -9,8 +9,8 @@ import java.util.List;
 
 public class RolDAO {
 
-    public List<Rol> getAllRoles() throws SQLException {
-        List<Rol> roles = new ArrayList<>();
+    public ArrayList<Rol> getAllRoles() throws SQLException {
+        ArrayList<Rol> roles = new ArrayList<>();
         String query = "SELECT descripcion_rol, nombre FROM rol";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -19,7 +19,7 @@ public class RolDAO {
 
             while (rs.next()) {
                 Rol rol = new Rol(
-                        rs.getString("descripcion"),
+                        rs.getString("descripcion_rol"),
                         rs.getString("nombre")
                 );
                 roles.add(rol);
@@ -39,7 +39,7 @@ public class RolDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return new Rol(
-                            rs.getString("descripcion"),
+                            rs.getString("descripcion_rol"),
                             rs.getString("nombre")
                     );
                 }

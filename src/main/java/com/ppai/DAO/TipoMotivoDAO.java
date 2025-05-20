@@ -9,8 +9,8 @@ import java.util.List;
 
 public class TipoMotivoDAO {
 
-    public List<TipoMotivo> getAllTiposMotivo() throws SQLException {
-        List<TipoMotivo> tiposMotivo = new ArrayList<>();
+    public ArrayList<TipoMotivo> getAllTiposMotivo() throws SQLException {
+        ArrayList<TipoMotivo> tiposMotivo = new ArrayList<>();
         String query = "SELECT id, nombre FROM tipo_motivo";
 
         try (Connection conn = DatabaseConnection.getConnection();

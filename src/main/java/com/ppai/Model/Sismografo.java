@@ -1,6 +1,7 @@
 package com.ppai.Model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +46,6 @@ public class Sismografo {
     }
 
     public Boolean sosMiSismografo(EstacionSismologica estacion) {
-        return this.estacionSismologica == estacion;
+        return Objects.equals(this.estacionSismologica.getNombre(), estacion.getNombre());
     }
 }

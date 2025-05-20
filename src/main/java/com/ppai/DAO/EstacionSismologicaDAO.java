@@ -10,8 +10,8 @@ import java.util.List;
 
 public class EstacionSismologicaDAO {
 
-    public List<EstacionSismologica> getAllEstaciones() throws SQLException {
-        List<EstacionSismologica> estaciones = new ArrayList<>();
+    public ArrayList<EstacionSismologica> getAllEstaciones() throws SQLException {
+        ArrayList<EstacionSismologica> estaciones = new ArrayList<>();
         String query = "SELECT id, codigo_estacion, documento_certificacion_adq, fecha_solicitud_adquisicion, " +
                 "latitud, longitud, nombre, numero_certificacion_adquisicion FROM estacion_sismologica";
 

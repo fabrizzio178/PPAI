@@ -4,7 +4,10 @@ import com.ppai.Model.*;
 import com.ppai.View.Monitor;
 import lombok.Getter;
 import lombok.Setter;
+import com.ppai.DAO.*;
 
+
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,23 +17,49 @@ import java.util.Objects;
 @Getter
 public class GestorResultado {
     // Arrays con todas las instancias de cada clase que el gestor conoce
-    private ArrayList<Sismografo> todosSismografos;
-    private ArrayList<OrdenDeInspeccion> todosOrdenInspeccion;
-    private ArrayList<Empleado> todosEmpleados;
+    private ArrayList<Sismografo> todosSismografos; // ✅
+    private ArrayList<OrdenDeInspeccion> todosOrdenInspeccion; // ✅
+    private ArrayList<Empleado> todosEmpleados; // ✅
     private Sesion sesionActual;
-    private ArrayList<Estado> todosEstados;
-    private ArrayList<TipoMotivo> todosTipoMotivo;
-    private Monitor monitor;
+    private ArrayList<Estado> todosEstados; // ✅
+    private ArrayList<TipoMotivo> todosTipoMotivo; // ✅
+    private Monitor monitor; // monitor
+    // Atributos del gestor de ordenes de inspeccion
     private String ordenInspSeleccionada;
     private String observacion;
     private ArrayList<String> tiposMotivosFueraDeServicio;
+    private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados;
+    private ArrayList<String> comentarios;
 
-    public void hardcodearTipoMotivo() {
-        TipoMotivo tipoMotivo = new TipoMotivo("NO ANDA");
-        this.todosTipoMotivo = new ArrayList<>();
-        this.todosTipoMotivo.add(tipoMotivo);
+    public GestorResultado() throws SQLException {
+//        RolDAO rolDAO = new RolDAO();
+//        ArrayList<Rol> roles = rolDAO.getAllRoles();
 
+        // FALTA HACER LA SESION EN LA BDA
+
+        TipoMotivoDAO tipoMotivoDAO = new TipoMotivoDAO();
+        this.todosTipoMotivo = tipoMotivoDAO.getAllTiposMotivo();
+
+        EstadoDAO estadoDAO = new EstadoDAO();
+        this.todosEstados = estadoDAO.getAllEstados();
+
+        EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+        this.todosEmpleados = empleadoDAO.getAllEmpleados();
+
+        // CambioEstadoDAO cambioEstadoDAO = new CambioEstadoDAO();
+
+        // EstacionSismologicaDAO estacionSismologicaDAO = new EstacionSismologicaDAO();
+
+        // UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+        SismografoDAO sismografoDAO = new SismografoDAO();
+        this.todosSismografos = sismografoDAO.getAllSismografos();
+
+        OrdenDeInspeccionDAO ordenDeInspeccionDAO = new OrdenDeInspeccionDAO();
+        this.todosOrdenInspeccion = ordenDeInspeccionDAO.getAllOrdenes();
     }
+
+
 
     public void hardcodearSesion() {
         this.sesionActual = new Sesion(
@@ -44,50 +73,18 @@ public class GestorResultado {
                         new Empleado(
                                 "Llabot",
                                 "Ignacio",
-                                "sex@gmail.com",
-                                "1234567890",
+                                "IL@gmail.com",
+                                "11111111",
                                 new Rol(
-                                        "Programador de juegos porno 3D",
-                                        "Programador"
+                                        "---",
+                                        "Administrador de Red"
                                 )
                         )
                 )
         );
     }
 
-    public void hardcodearOrden () {
-        this.todosOrdenInspeccion = new ArrayList<>();
-        OrdenDeInspeccion nuevaOrden = new OrdenDeInspeccion(
-                        100,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        "No anda",
-                        "Mantenimiento",
-                        new EstacionSismologica(
-                                50,
-                                "Documento",
-                                LocalDateTime.now(),
-                                80.00,
-                                60.00,
-                                "Estacion Gay",
-                                20),
-                        new Estado(
-                                "Estacion",
-                                "Descompuesto"),
-                        new Empleado(
-                                "Llabot",
-                                "Ignacio",
-                                "sex@gmail.com",
-                                "1234567890",
-                                new Rol ("Programador de juegos porno 3D",
-                                        "Programador")
-                        )
-        );
 
-        this.todosOrdenInspeccion.add(nuevaOrden);
-
-    }
 
     //Atributos del gestor
     private Empleado usuarioLogueado;
@@ -97,8 +94,7 @@ public class GestorResultado {
     // 2 - Funcion que va a disparar todas las funciones del gestor (creo).
     public void opCerrarOrdenInspeccion() {
         this.hardcodearSesion();
-        this.hardcodearOrden();
-        this.hardcodearTipoMotivo();
+
 
         this.buscarRILogueado();
         this.buscarOrdenesInsp();
@@ -111,6 +107,7 @@ public class GestorResultado {
         monitor.mostrarTiposMotivos(tiposMotivosFueraDeServicio);
         monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio);
 
+        monitor.solicitarConfirmacion();
     }
     // 3 - Busca al responsable de inspeccion logueado (le pregunta a la sesion actual).
 
@@ -124,11 +121,10 @@ public class GestorResultado {
     public void buscarOrdenesInsp() {
         this.ordenesInsp = new ArrayList<>(); // porque carajo crea esto perdon todavia no se
         for(OrdenDeInspeccion orden : todosOrdenInspeccion) {
-            if(orden.sosDeEmpleado(this.usuarioLogueado) && orden.sosCompletamenteRealizada()){
+            if(orden.sosCompletamenteRealizada() && orden.sosDeEmpleado(this.usuarioLogueado)){
                 ordenesInsp.add(orden);
             }
         }
-        ;
     }
 
     // 5 - Las ordena y listo.
@@ -143,7 +139,7 @@ public class GestorResultado {
         this.datosOrdenInsp = new ArrayList<>();    // Tengo dudas by: salva
         for(OrdenDeInspeccion orden : ordenesInsp) {
             datosOrdenInsp.add(orden.getDatosOI(todosSismografos));
-        };
+        }
     }
 
     // 9 - Toma la seleccion del usuario cuando se ejecuta previamente la funcion del monitor de pedir que seleccione.
@@ -171,9 +167,23 @@ public class GestorResultado {
     // 15 - Buscar y mostrar tipos motivos.
 
     public void buscarMotivos() {
-        ArrayList<String> tiposMotivosFueraDeServicio = new ArrayList<String>();
+        this.tiposMotivosFueraDeServicio = new ArrayList<>();
         for (TipoMotivo tipoMotivo : todosTipoMotivo ) {
             tiposMotivosFueraDeServicio.add(tipoMotivo.getDescripcion());
         }
+    }
+    // 19 - Toma los tipos de datos ingresados en el loop del monitor.
+
+    public void tomarTipoMotivo (String tipo) {
+        this.tiposMotivosFueraDeServicioSeleccionados = new ArrayList<>();
+        this.tiposMotivosFueraDeServicioSeleccionados.add(tipo);
+        monitor.pedirComentario();
+    }
+
+    // 22 - Toma el comentario ingreado por teclado en el monitor.
+
+    public void tomarComentario(String comentario) {
+        this.comentarios = new ArrayList<>();
+        this.comentarios.add(comentario);
     }
 }

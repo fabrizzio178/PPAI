@@ -15,8 +15,8 @@ public class EmpleadoDAO {
         this.rolDAO = new RolDAO();
     }
 
-    public List<Empleado> getAllEmpleados() throws SQLException {
-        List<Empleado> empleados = new ArrayList<>();
+    public ArrayList<Empleado> getAllEmpleados() throws SQLException {
+        ArrayList<Empleado> empleados = new ArrayList<>();
         String query = "SELECT id, apellido, nombre, mail, telefono, rol_id FROM empleado";
 
         try (Connection conn = DatabaseConnection.getConnection();

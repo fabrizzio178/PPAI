@@ -15,8 +15,8 @@ public class UsuarioDAO {
         this.empleadoDAO = new EmpleadoDAO();
     }
 
-    public List<Usuario> getAllUsuarios() throws SQLException {
-        List<Usuario> usuarios = new ArrayList<>();
+    public ArrayList<Usuario> getAllUsuarios() throws SQLException {
+        ArrayList<Usuario> usuarios = new ArrayList<>();
         String query = "SELECT id, password, nombre_usuario, habilitado, empleado_id FROM usuario";
 
         try (Connection conn = DatabaseConnection.getConnection();
