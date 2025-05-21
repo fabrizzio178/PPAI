@@ -14,18 +14,7 @@ import java.util.Scanner;
 
 public class Monitor {
     private GestorResultado gestorResultado;
-//    private ArrayList<TipoMotivo> tiposMotivos;
 
-
-//    public Monitor() throws SQLException {
-//        RolDAO rolDAO = new RolDAO();
-//        ArrayList<Rol> roles = rolDAO.getAllRoles();
-//
-//        TipoMotivoDAO tipoMotivoDAO = new TipoMotivoDAO();
-//        ArrayList<TipoMotivo> tiposMotivo = tipoMotivoDAO.getAllTiposMotivo();
-//        this.tiposMotivos = tiposMotivo;
-//
-//    }
 
 
     // 0 - Arranca todo el programa DIOS POR QUE ES VERDE ESTO
