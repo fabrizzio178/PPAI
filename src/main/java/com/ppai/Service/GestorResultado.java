@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Objects;
+
 
 @Setter
 @Getter
@@ -30,6 +30,9 @@ public class GestorResultado {
     private ArrayList<String> tiposMotivosFueraDeServicio;
     private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados;
     private ArrayList<String> comentarios;
+    private String estadoOrdenInspeccionCerrada;
+    private LocalDateTime fechaHoraActual;
+    private String estadoSismografoFueraDeServicio;
 
     public GestorResultado() throws SQLException {
 //        RolDAO rolDAO = new RolDAO();
@@ -186,4 +189,50 @@ public class GestorResultado {
         this.comentarios = new ArrayList<>();
         this.comentarios.add(comentario);
     }
+
+    // 25 - Validar que la observacion no este vacia y haya elegido al menos un motivo.
+    // Si esto da false es un caso alternativo.
+    public boolean validarObservacionExistente() {
+        if (observacion.isEmpty()) {
+            return false;
+        } else {
+            return validarMotivoExistente(); // No se si esto deberia ir por fuera o no del metodo, por el diagrama de secuencia
+        }
+    }
+
+    // 26- Validar motivo existente, podria ir en la funcion 25 pero hay que respetar el diagrama de secuencia.
+
+    public boolean validarMotivoExistente (){
+        return !tiposMotivosFueraDeServicioSeleccionados.isEmpty();
+    }
+
+    // 27 - Busca en todos los estados y pregunta si es ambito orden inspeccion y si es cerrada.
+    public void BuscarEstadoCerradaOI() {
+        for (Estado estado:todosEstados ){
+            if (estado.sosAmbitoOrdenInspeccion() && estado.sosOICerrada()){ // Creo que aca hay una inconsistencia con el diagrama de secuencia.
+                this.estadoOrdenInspeccionCerrada = estado.getNombreEstado();
+            }
+        }
+    }
+
+    // 28 - Toma la fecha actual y la almacena.
+    public void getFechaHoraActual() {
+        this.fechaHoraActual = LocalDateTime.now();
+    }
+
+    // 29 - Busca en todos los estados y pregunta si es ambito sismografo y si es fuera de servicio.
+
+    public void buscarFueraDeServicio(){
+        for (Estado estado: todosEstados ){
+            if (estado.sosAmbitoSismografo() && estado.sosFueraDeServicio()){
+                this.estadoSismografoFueraDeServicio = estado.getNombreEstado(); // Creo que aca esta la misma inconsistencia que en la anterior
+            }
+        }
+    }
+
+    // 30 - ME TOMO EL PALOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    public void cerrarOrdenInspeccion() {
+
+    }
+
 }

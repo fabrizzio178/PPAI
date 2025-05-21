@@ -25,4 +25,15 @@ public class Estado {
     public Boolean sosCompletamenteRealizada() {
         return this.nombreEstado.equalsIgnoreCase("Completamente Realizada");
     }
+
+    public Boolean sosOICerrada() {
+        return this.nombreEstado.equalsIgnoreCase("Cerrada");
+    }
+
+    public Boolean sosAmbitoSismografo(){
+        return this.ambito.equalsIgnoreCase("Sismografo");
+    }
+    public Boolean sosFueraDeServicio(){
+        return this.nombreEstado.equalsIgnoreCase("Fuera de Servicio");
+    }
 }
