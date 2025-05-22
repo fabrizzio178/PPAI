@@ -27,7 +27,7 @@ public class Monitor {
     public void habilitarVentana() throws SQLException {
         this.gestorResultado = new GestorResultado();
         this.gestorResultado.setMonitor(this);
-//        this.gestorResultado.setTodosTipoMotivo(tiposMotivos);
+
 
         this.gestorResultado.opCerrarOrdenInspeccion();
     }

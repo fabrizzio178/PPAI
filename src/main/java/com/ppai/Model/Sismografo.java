@@ -48,4 +48,17 @@ public class Sismografo {
     public Boolean sosMiSismografo(EstacionSismologica estacion) {
         return Objects.equals(this.estacionSismologica.getNombre(), estacion.getNombre());
     }
+
+    // Obtiene el cambio de estado actual, si lo es, le setea una fecha hora de finalizacion
+    public void fueraDeServicio(LocalDateTime fechaHora, Estado estadoCerrado, Empleado responsable, ArrayList<TipoMotivo> motivos, ArrayList<String> comentarios){
+        for (CambioEstado cambio : this.cambiosEstado) {
+            if(cambio.sosActual()){
+                cambio.setFechaHoraFin(fechaHora);
+                CambioEstado fueraServicio = new CambioEstado(fechaHora,null, estadoCerrado, responsable);
+                fueraServicio.cargarMotivos(motivos,comentarios); //ARREGLEN ESTO SE ARREGLO les puse el ; yo inutiles de mierda todo hola soy verde
+                // NombreClase nombreObjeto = new NombreClase();
+            };
+        }
+
+    }
 }

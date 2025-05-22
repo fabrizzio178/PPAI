@@ -23,16 +23,21 @@ public class GestorResultado {
     private Sesion sesionActual;
     private ArrayList<Estado> todosEstados; // ✅
     private ArrayList<TipoMotivo> todosTipoMotivo; // ✅
-    private Monitor monitor; // monitor
+    private /*monitor*/ Monitor monitor; // monitor  <------ monitor
     // Atributos del gestor de ordenes de inspeccion
-    private String ordenInspSeleccionada;
+    private Empleado usuarioLogueado;
+    private ArrayList<OrdenDeInspeccion> ordenesInsp;
+    private ArrayList<ArrayList<Object>> datosOrdenInsp;
+    private OrdenDeInspeccion ordenInspSeleccionada;
     private String observacion;
     private ArrayList<String> tiposMotivosFueraDeServicio;
     private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados;
+    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicioSeleccionadosObjetos;
     private ArrayList<String> comentarios;
-    private String estadoOrdenInspeccionCerrada;
+    private Estado estadoOrdenInspeccionCerrada;
     private LocalDateTime fechaHoraActual;
-    private String estadoSismografoFueraDeServicio;
+    private Estado estadoSismografoFueraDeServicio;
+
 
     public GestorResultado() throws SQLException {
 //        RolDAO rolDAO = new RolDAO();
@@ -89,11 +94,6 @@ public class GestorResultado {
 
 
 
-    //Atributos del gestor
-    private Empleado usuarioLogueado;
-    private ArrayList<OrdenDeInspeccion> ordenesInsp;
-    private ArrayList<ArrayList<Object>> datosOrdenInsp;
-
     // 2 - Funcion que va a disparar todas las funciones del gestor (creo).
     public void opCerrarOrdenInspeccion() {
         this.hardcodearSesion();
@@ -139,7 +139,7 @@ public class GestorResultado {
     // 6 - Se llama mostrar datos y hace de todo menos mostrar los datos, lo que hace es guardar los datos de las ordenes --> POR QUE ES VERDE???
     // en un array y como resultado final te da un array de arrays de objetos, terrible.
     public void mostrarDatos (ArrayList<Sismografo> todosSismografos) {
-        this.datosOrdenInsp = new ArrayList<>();    // Tengo dudas by: salva
+        this.datosOrdenInsp = new ArrayList<>();
         for(OrdenDeInspeccion orden : ordenesInsp) {
             datosOrdenInsp.add(orden.getDatosOI(todosSismografos));
         }
@@ -147,8 +147,8 @@ public class GestorResultado {
 
     // 9 - Toma la seleccion del usuario cuando se ejecuta previamente la funcion del monitor de pedir que seleccione.
 
-    public void tomarSeleccionOrdenInsp(String ordenInsp) {
-        this.ordenInspSeleccionada = ordenInsp;
+    public void tomarSeleccionOrdenInsp(String ordenInsp) { // llega nro orden
+        this.ordenInspSeleccionada = todosOrdenInspeccion.stream().filter(orden -> orden.getNumeroOrden().equals(Integer.parseInt(ordenInsp))).findFirst().orElse(null);
     }
 
     // 10 - Dispara al monitor para que pida una observacion.
@@ -164,7 +164,7 @@ public class GestorResultado {
 
     // 14 - Permite acutalizar??? ¯\_(ツ)_/¯
     public void permitirActualizarSismografoComoFS(){
-
+        System.out.println("JARVIS... PERMITE LA ACTUALIZACIÓN");
     }
 
     // 15 - Buscar y mostrar tipos motivos.
@@ -175,7 +175,7 @@ public class GestorResultado {
             tiposMotivosFueraDeServicio.add(tipoMotivo.getDescripcion());
         }
     }
-    // 19 - Toma los tipos de datos ingresados en el loop del monitor.
+    // 19 - Toma los tipos de datos ingresados en el loop del monitor. TIPO SON OBJETOS
 
     public void tomarTipoMotivo (String tipo) {
         this.tiposMotivosFueraDeServicioSeleccionados = new ArrayList<>();
@@ -207,10 +207,10 @@ public class GestorResultado {
     }
 
     // 27 - Busca en todos los estados y pregunta si es ambito orden inspeccion y si es cerrada.
-    public void BuscarEstadoCerradaOI() {
+    public void buscarEstadoCerradaOI() {
         for (Estado estado:todosEstados ){
             if (estado.sosAmbitoOrdenInspeccion() && estado.sosOICerrada()){ // Creo que aca hay una inconsistencia con el diagrama de secuencia.
-                this.estadoOrdenInspeccionCerrada = estado.getNombreEstado();
+                this.estadoOrdenInspeccionCerrada = estado;
             }
         }
     }
@@ -225,14 +225,27 @@ public class GestorResultado {
     public void buscarFueraDeServicio(){
         for (Estado estado: todosEstados ){
             if (estado.sosAmbitoSismografo() && estado.sosFueraDeServicio()){
-                this.estadoSismografoFueraDeServicio = estado.getNombreEstado(); // Creo que aca esta la misma inconsistencia que en la anterior
+                this.estadoSismografoFueraDeServicio = estado; // Creo que aca esta la misma inconsistencia que en la anterior
             }
         }
     }
 
-    // 30 - ME TOMO EL PALOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    // 30 - Llama al metodo cerrar de la orden de inspecion. cerrar() setea un estado y setea la fechaHoraCierre
     public void cerrarOrdenInspeccion() {
-
+        this.ordenInspSeleccionada.cerrar(estadoOrdenInspeccionCerrada);
     }
 
+    // 31 - PonerSismografoFueraDeServicio
+    // Este método esta asi porque no teniamos al sismografo previamente seleccionado. Ademas, se respetan las BLACK OPS PROTOCOL ENGAGED
+    // relaciones dadas en la vista estatica de la realizacion de CU de análisis
+
+    public void ponerSismografoFueraDeServicio(){
+        this.ordenInspSeleccionada.getEstacionSismologica().getSismografo(todosSismografos).fueraDeServicio(fechaHoraActual,
+                estadoSismografoFueraDeServicio,usuarioLogueado,tiposMotivosFueraDeServicioSeleccionadosObjetos,comentarios);
+        // EL ERROR ES PORQUE TRABAJAMOS CON STRINGS Y ME PIDE TRABAJAR CON OBJETOS (creamos el tiposMotivosObjetos para que !!!!!!!!!
+    }
+
+
+
+    
 }

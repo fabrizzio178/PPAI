@@ -4,9 +4,7 @@ import com.ppai.Model.EstacionSismologica;
 import com.ppai.Database.DatabaseConnection;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class EstacionSismologicaDAO {
 
