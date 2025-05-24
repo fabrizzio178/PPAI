@@ -195,14 +195,6 @@ public class Monitor implements Initializable {
                 gestorResultado.getFechaHoraActual();
                 gestorResultado.BuscarEstadoCerradaOI();
                 gestorResultado.buscarFueraDeServicio();
-                if (!gestorResultado.validarObservacionExistente()) {
-                    Alert error = new Alert(Alert.AlertType.ERROR);
-                    error.setTitle("Error de Validación");
-                    error.setHeaderText(null);
-                    error.setContentText("Debe ingresar una observación y al menos un motivo.");
-                    error.showAndWait();
-                    return;
-                }
                 gestorResultado.cerrarOrdenInspeccion();
                 gestorResultado.ponerSismografoFueraDeServicio();
 
@@ -211,6 +203,8 @@ public class Monitor implements Initializable {
                 success.setHeaderText(null);
                 success.setContentText("¡Orden cerrada con éxito!");
                 success.showAndWait();
+
+                enviarMail();
             } else {
                 Alert cancel = new Alert(Alert.AlertType.INFORMATION);
                 cancel.setTitle("Cancelado");
@@ -223,5 +217,13 @@ public class Monitor implements Initializable {
 
     public void pedirComentario() {
         mostrarCampoComentario();
+    }
+
+    public void enviarMail() {
+        Alert mail = new Alert(Alert.AlertType.INFORMATION);
+        mail.setTitle("Correo enviado");
+        mail.setHeaderText(null);
+        mail.setContentText("Mail enviado.");
+        mail.showAndWait();
     }
 }
