@@ -2,6 +2,7 @@ package com.ppai.Service;
 
 import com.ppai.Model.*;
 import com.ppai.View.Monitor;
+import javafx.application.Platform;
 import lombok.Getter;
 import lombok.Setter;
 import com.ppai.DAO.*;
@@ -233,6 +234,7 @@ public class GestorResultado {
             this.cerrarOrdenInspeccion();
             this.ponerSismografoFueraDeServicio();
             this.enviarMail();
+            this.notificarMonitorCCRS();
             this.finCU();
         } else if (!validacionOI) {
             monitor.alertaFaltaObservacion();
@@ -307,17 +309,26 @@ public class GestorResultado {
         monitor.enviarMail();
     }
 
+    public void notificarMonitorCCRS() {
+        monitor.notificarMonitorCCRS(); // acá en realidad deberia ir a otro monitor, lo uso para enviar la alerta
+    }
+
     // 33 - lo mismo ya basta ODIO LA CONSISTENCIA EL DIAGRAMA ESTA MAL MALDITO COLODROID
 
     public void finCU(){
         monitor.mostrarFinCU();
+        Platform.exit();
+        System.exit(0);
     }
 
     //todo: no se estan pasando los tipos de motivos y sus comentarios al cierre, falta agregar eso en el back
     //todo: LA PROXIMA FABRI POR FAVOR TRABAJÁ EN LA MISMA BRANCH QUE EL RESTO ASÍ NO HAY QUE HACER NADA DE MAS
 
     //ARREGLADO: si toco el boton continuar sin seleccionar la orden solo desaparece el boton y no pasa nada mas
-    //fixme: si no pongo observacion al confirmar el cierre desaparece todo
-    //fixme: ^^^^^ no se como hacerlo, en el metodo aclaro mejor (aclaro que es lo que NO se hacer)
+    //ARREGLADO: si no pongo observacion al confirmar el cierre desaparece to,do
+    //ARREGLADO: ^^^^^ no se como hacerlo, en el metodo aclaro mejor (aclaro que es lo que NO se hacer)
     //ARREGLADO: puedo confirmar motivo sin seleccionar nada... ESO ESTÁ MAL
+
+    //todo: revisar punto 13 de la descripcion de CU, deberia haber otra pantalla...
+    //LOS CASOS ALTERNATIVOS CONTEMPLADOS SON A3 y A7
 }

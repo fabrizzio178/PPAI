@@ -4,10 +4,15 @@ import com.ppai.Service.GestorResultado;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.stereotype.Component;
+import java.util.Optional;
+
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -105,15 +110,18 @@ public class Monitor implements Initializable {
     }
 
     public void alertaFaltaObservacion() {
-        Alert alerta = new Alert(Alert.AlertType.WARNING);
-        alerta.setTitle("ALERTA");
-        alerta.setHeaderText(null);
-        alerta.setContentText("No se introdujo una observacion");
-        alerta.showAndWait();
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("No se ingresó una observacion");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Por favor, ingrese una observacion:");
 
-        // no se como hacer que vuelva al flujo
-        // porque si le pido la observacion de vuelta, despues aparece la pantalla de seleccion de motivos
-        // y ahi si o si va a tener que seleccionar un motivo mas para continuar
+        Optional<String> resultado = dialog.showAndWait();
+        if (resultado.isPresent()) {
+            String textoIngresado = resultado.get();
+            this.gestorResultado.setObservacion(textoIngresado);
+            this.gestorResultado.tomarConfirmacion();
+        }
+
     }
 
     public void alertaFaltaMotivo() {
@@ -255,11 +263,55 @@ public class Monitor implements Initializable {
         mail.showAndWait();
     }
 
-    public void mostrarFinCU () {
+    public void notificarMonitorCCRS() {
+        Alert mail = new Alert(Alert.AlertType.INFORMATION);
+        mail.setTitle("CCRS notificado");
+        mail.setHeaderText(null);
+        mail.setContentText("CCRS notificado.");
+        mail.showAndWait();
+    }
+
+    /* public void mostrarFinCU () {
         Alert fin = new Alert(Alert.AlertType.INFORMATION);
         fin.setTitle("FIN CU");
         fin.setHeaderText(null);
-        fin.setContentText("SE TERMINÓ EL CU CARAJO.");
+        fin.setContentText("SE TERMINÓ EL CU.");
         fin.showAndWait();
+
+    } */
+
+    public void mostrarFinCU() {
+        Alert fin = new Alert(Alert.AlertType.INFORMATION);
+        fin.setTitle("FIN CU");
+        fin.setHeaderText(null);
+
+        // Crear la imagen
+        ImageView imageView = new ImageView(new Image("/images/imagen.png")); // Ajusta la ruta
+        imageView.setFitHeight(100); // Ajusta el tamaño según necesites
+        imageView.setFitWidth(100);
+        imageView.setPreserveRatio(true);
+
+        // Crear VBox para organizar elementos verticalmente
+        VBox contenido = new VBox(10); // 10 es el espaciado entre elementos
+        contenido.setAlignment(Pos.CENTER);
+        contenido.getChildren().addAll(new Label("SE TERMINÓ EL CU."), imageView);
+
+        // Establecer el contenido personalizado
+        fin.getDialogPane().setContent(contenido);
+
+        fin.showAndWait();
+    }
+
+
+    @FXML
+    public void cancelaCU() {
+        Alert fin = new Alert(Alert.AlertType.INFORMATION);
+        fin.setTitle("FIN CU");
+        fin.setHeaderText(null);
+        fin.setContentText("Se canceló el CU.");
+        fin.showAndWait();
+
+        Platform.exit();
+        System.exit(0);
     }
 }
