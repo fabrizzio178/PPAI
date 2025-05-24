@@ -2,14 +2,12 @@ package com.ppai.View;
 
 import com.ppai.Service.GestorResultado;
 import javafx.application.Platform;
-import javafx.fxml.Initializable;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.stereotype.Component;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -18,8 +16,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-@Setter
-@Getter
 @Component
 public class Monitor implements Initializable {
     private GestorResultado gestorResultado;
@@ -31,9 +27,13 @@ public class Monitor implements Initializable {
     @FXML private Button botonConfirmarObservacion;
     @FXML private VBox contenedorMotivos;
     @FXML private Button botonConfirmarMotivos;
-
+    @FXML private Label labelComentario;
+    @FXML private TextField campoComentario;
+    @FXML private Button botonConfirmarComentario;
 
     private ArrayList<CheckBox> checkboxesMotivos = new ArrayList<>();
+    private ArrayList<String> motivosSeleccionados = new ArrayList<>();
+    private int indiceMotivoActual = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -87,7 +87,6 @@ public class Monitor implements Initializable {
             gestorResultado.tomarSeleccionOrdenInsp(nroSeleccionado);
             System.out.println("Seleccionaste la orden: " + nroSeleccionado);
 
-            // Mostrar campo de observación
             labelObservacion.setVisible(true);
             campoObservacion.setVisible(true);
             botonConfirmarObservacion.setVisible(true);
@@ -109,17 +108,15 @@ public class Monitor implements Initializable {
         campoObservacion.setVisible(false);
         botonConfirmarObservacion.setVisible(false);
 
-        // Mostrar alerta
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle("Información");
         alerta.setHeaderText(null);
         alerta.setContentText("Actualización como Fuera de Servicio permitida");
         alerta.showAndWait();
 
-        // Continuar con flujo
         gestorResultado.permitirActualizarSismografoComoFS();
         gestorResultado.buscarMotivos();
-        this.mostrarTiposMotivos(gestorResultado.getTiposMotivosFueraDeServicio());
+        mostrarTiposMotivos(gestorResultado.getTiposMotivosFueraDeServicio());
     }
 
     public void mostrarTiposMotivos(ArrayList<String> tiposMotivos) {
@@ -137,36 +134,59 @@ public class Monitor implements Initializable {
 
     @FXML
     public void solicitarSelTipoMotivo() {
-        boolean seleccionoAlMenosUno = false;
-
+        motivosSeleccionados.clear();
         for (CheckBox cb : checkboxesMotivos) {
             if (cb.isSelected()) {
-                gestorResultado.tomarTipoMotivo(cb.getText());
-                seleccionoAlMenosUno = true;
+                motivosSeleccionados.add(cb.getText());
             }
         }
 
-        if (seleccionoAlMenosUno) {
-            contenedorMotivos.setVisible(false);
-            botonConfirmarMotivos.setVisible(false);
-            this.pedirComentario();
-        } else {
+        if (motivosSeleccionados.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setTitle("Advertencia");
             alerta.setHeaderText(null);
             alerta.setContentText("Debe seleccionar al menos un motivo.");
             alerta.showAndWait();
+        } else {
+            contenedorMotivos.setVisible(false);
+            botonConfirmarMotivos.setVisible(false);
+            indiceMotivoActual = 0;
+            mostrarCampoComentario();
         }
     }
 
-    public void pedirComentario() {
-        System.out.println("Ingrese el comentario: ");
-        gestorResultado.tomarComentario(tomarComentario());
+    private void mostrarCampoComentario() {
+        labelComentario.setText("Comentario para: " + motivosSeleccionados.get(indiceMotivoActual));
+        labelComentario.setVisible(true);
+        campoComentario.setVisible(true);
+        botonConfirmarComentario.setVisible(true);
     }
 
-    public String tomarComentario() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
+    @FXML
+    public void confirmarComentario() {
+        String comentario = campoComentario.getText();
+        if (comentario.isEmpty()) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("Advertencia");
+            alerta.setHeaderText(null);
+            alerta.setContentText("Debe ingresar un comentario.");
+            alerta.showAndWait();
+            return;
+        }
+
+        gestorResultado.tomarTipoMotivo(motivosSeleccionados.get(indiceMotivoActual));
+        gestorResultado.tomarComentario(comentario);
+        campoComentario.clear();
+
+        indiceMotivoActual++;
+        if (indiceMotivoActual < motivosSeleccionados.size()) {
+            mostrarCampoComentario();
+        } else {
+            labelComentario.setVisible(false);
+            campoComentario.setVisible(false);
+            botonConfirmarComentario.setVisible(false);
+            solicitarConfirmacion();
+        }
     }
 
     public void solicitarConfirmacion() {
@@ -182,5 +202,9 @@ public class Monitor implements Initializable {
         } else {
             System.out.println("UY ME CAGUE");
         }
+    }
+
+    public void pedirComentario() {
+        mostrarCampoComentario();
     }
 }
