@@ -20,7 +20,7 @@ public class Sismografo {
     private EstacionSismologica estacionSismologica;
     private Estado estadoActual;
     private ArrayList<CambioEstado> cambiosEstado;
-    
+
     public Sismografo(
             LocalDateTime fechaAdquisicion,
             String identificadorSismografo,
@@ -51,12 +51,16 @@ public class Sismografo {
     }
 
     // Obtiene el cambio de estado actual, si lo es, le setea una fecha hora de finalizacion
-    public void fueraDeServicio(LocalDateTime fechaHora){
+    public void fueraDeServicio(LocalDateTime fechaHora, Estado estadoCerrado, Empleado responsable, ArrayList<TipoMotivo> motivos, ArrayList<String> comentarios) {
         for (CambioEstado cambio : this.cambiosEstado) {
-            if(cambio.sosActual()){
+            if (cambio.sosActual()) {
                 cambio.setFechaHoraFin(fechaHora);
-            };
+                CambioEstado fueraServicio = new CambioEstado(fechaHora, null, estadoCerrado, responsable);
+                fueraServicio.cargarMotivos(motivos, comentarios); //ARREGLEN ESTO SE ARREGLO les puse el ; yo inutiles de mierda todo hola soy verde
+                // NombreClase nombreObjeto = new NombreClase();
+                System.out.println("hola soy el estado actual"); //TODO OBLITERAR (funciona, lo dejo para dsp cuando revisemos)
+            }
+            ;
         }
-
     }
 }

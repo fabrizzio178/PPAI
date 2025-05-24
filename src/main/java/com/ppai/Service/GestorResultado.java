@@ -31,11 +31,12 @@ public class GestorResultado {
     private String observacion;
     private ArrayList<String> tiposMotivosFueraDeServicio;
     private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados;
+    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicioSeleccionadosObjetos;
     private ArrayList<String> comentarios;
     private String estadoOrdenInspeccionCerrada;
     private Estado estadoOrdenInspeccionCerradaObj;
     private LocalDateTime fechaHoraActual;
-    private String estadoSismografoFueraDeServicio;
+    private Estado estadoSismografoFueraDeServicio;
     private Empleado usuarioLogueado;
     private ArrayList<OrdenDeInspeccion> ordenesInsp;
     private ArrayList<ArrayList<Object>> datosOrdenInsp;
@@ -280,7 +281,7 @@ public class GestorResultado {
     public void buscarFueraDeServicio(){
         for (Estado estado: todosEstados ){
             if (estado.sosAmbitoSismografo() && estado.sosFueraDeServicio()){
-                this.estadoSismografoFueraDeServicio = estado.getNombreEstado(); // Creo que aca esta la misma inconsistencia que en la anterior
+                this.estadoSismografoFueraDeServicio = estado; // Creo que aca esta la misma inconsistencia que en la anterior
             }
         }
     }
@@ -295,7 +296,19 @@ public class GestorResultado {
     // Este método esta asi porque no teniamos al sismografo previamente seleccionado. Ademas, se respetan las
     // relaciones dadas en la vista estatica de la realizacion de CU de análisis
     public void ponerSismografoFueraDeServicio(){
-        this.ordenInspSeleccionadaObj.getEstacionSismologica().getSismografo(todosSismografos).fueraDeServicio(fechaHoraActual);
+        this.tiposMotivosFueraDeServicioSeleccionadosObjetos = new ArrayList<>();
+        for (String tipo : tiposMotivosFueraDeServicioSeleccionados) {
+            for (TipoMotivo tipoMotivo : todosTipoMotivo) {
+                if (tipoMotivo.getDescripcion().equals(tipo)) {
+                    tiposMotivosFueraDeServicioSeleccionadosObjetos.add(tipoMotivo);
+                    break;
+                }
+            } // DOBLE LOOP PARA TIEMPO DE EJECUCION EXPONENCIAL HELL YEAH transforma los strings a tipoMotivo
+
+        }
+        this.ordenInspSeleccionadaObj.getEstacionSismologica().getSismografo(todosSismografos).fueraDeServicio(fechaHoraActual,
+                estadoSismografoFueraDeServicio,usuarioLogueado,tiposMotivosFueraDeServicioSeleccionadosObjetos,comentarios);
+        // EL ERROR ES PORQUE TRABAJAMOS CON STRINGS Y ME PIDE TRABAJAR CON OBJETOS (creamos el tiposMotivosObjetos para que !!!!!!!!!
     }
 
     // 32 - llama al metodo mostrar mail del motior
@@ -321,7 +334,8 @@ public class GestorResultado {
         System.exit(0);
     }
 
-    //todo: no se estan pasando los tipos de motivos y sus comentarios al cierre, falta agregar eso en el back
+    //ARREGLADO?: no se estan pasando los tipos de motivos y sus comentarios al cierre, falta agregar eso en el back
+    //todo: ^^^^^^ revisar!!!!!!!!!!!
     //todo: LA PROXIMA FABRI POR FAVOR TRABAJÁ EN LA MISMA BRANCH QUE EL RESTO ASÍ NO HAY QUE HACER NADA DE MAS
 
     //ARREGLADO: si toco el boton continuar sin seleccionar la orden solo desaparece el boton y no pasa nada mas

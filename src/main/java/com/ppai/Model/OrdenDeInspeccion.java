@@ -2,6 +2,7 @@ package com.ppai.Model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@ToString
 
 public class OrdenDeInspeccion {
     private Integer numeroOrden;

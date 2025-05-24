@@ -35,6 +35,15 @@ public class CambioEstado {
         return this.fechaHoraFin == null;
     }
 
+    public void cargarMotivos(ArrayList<TipoMotivo> motivos, ArrayList<String> comentarios){
+        for (int i = 0; i < motivos.size(); i++) {
+            MotivoFueraServicio motivoFueraServicio = new MotivoFueraServicio(comentarios.get(i),motivos.get(i));
+            this.motivoFueraServicio.add(motivoFueraServicio);
+            System.out.println("motivo FS agregado: " + motivoFueraServicio.getDescripcion() + " comentario: " + motivoFueraServicio.getTipoMotivo().getDescripcion());
+            //TODO OBLITERAR (funciona, lo dejo para dsp cuando revisemos)
+        }
+    }
+
 
 }
 
