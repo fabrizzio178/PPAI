@@ -39,7 +39,6 @@ public class GestorResultado {
     private ArrayList<OrdenDeInspeccion> ordenesInsp;
     private ArrayList<ArrayList<Object>> datosOrdenInsp;
 
-    private Boolean banderaSeleccion;
 
 
 
@@ -199,21 +198,10 @@ public class GestorResultado {
     public void solicitarSelMotivos() {
         this.tiposMotivosFueraDeServicioSeleccionados = new ArrayList<>();
         this.comentarios = new ArrayList<>();
-        this.banderaSeleccion = true;
+
 
         monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio);
 
-
-        /* while (banderaSeleccion) {
-            monitor.solicitarSelTipoMotivo();
-        }
-        monitor.solicitarConfirmacion(); */
-
-        /*if (banderaSeleccion) {
-            monitor.solicitarSelTipoMotivo();
-        } else {
-            monitor.solicitarConfirmacion();
-        }*/
     }
 
 
@@ -229,6 +217,29 @@ public class GestorResultado {
 
     public void tomarComentario(String comentario) {
         this.comentarios.add(comentario);
+        monitor.solicitarConfirmacion();
+
+    }
+
+    // 23 - TomarConfirmacion()
+
+    public void tomarConfirmacion() {
+        Boolean validacionOI = this.validarObservacionExistente();
+        Boolean validacionMotivo = this.validarMotivoExistente();
+        if (validacionOI && validacionMotivo) { //SIGUE EL DIAGRAMA
+            this.buscarEstadoCerradaOI();
+            this.getFechaHoraActual();
+            this.buscarFueraDeServicio();
+            this.cerrarOrdenInspeccion();
+            this.ponerSismografoFueraDeServicio();
+            this.enviarMail();
+            this.finCU();
+        } else if (!validacionOI) {
+            monitor.alertaFaltaObservacion();
+        } else {
+            monitor.alertaFaltaMotivo();
+
+        }
 
     }
 
@@ -249,7 +260,7 @@ public class GestorResultado {
     }
 
     // 27 - Busca en todos los estados y pregunta si es ambito orden inspeccion y si es cerrada.
-    public void BuscarEstadoCerradaOI() {
+    public void buscarEstadoCerradaOI() {
         for (Estado estado:todosEstados ){
             if (estado.sosAmbitoOrdenInspeccion() && estado.sosOICerrada()){ // Creo que aca hay una inconsistencia con el diagrama de secuencia.
                 this.estadoOrdenInspeccionCerrada = estado.getNombreEstado();
@@ -285,4 +296,28 @@ public class GestorResultado {
         this.ordenInspSeleccionadaObj.getEstacionSismologica().getSismografo(todosSismografos).fueraDeServicio(fechaHoraActual);
     }
 
+    // 32 - llama al metodo mostrar mail del motior
+    // no creo que está bien pero de alguna forma el monitor debe mostrar la alerta de que lo envio
+    // pero al pedirle al monitor que muestre nos faltaria una flecha del gestor al monitor
+    // tampoco es el fin del mundo
+    // o por ahí si
+    // no lo se tengo frio y miedo
+
+    public void enviarMail(){
+        monitor.enviarMail();
+    }
+
+    // 33 - lo mismo ya basta ODIO LA CONSISTENCIA EL DIAGRAMA ESTA MAL MALDITO COLODROID
+
+    public void finCU(){
+        monitor.mostrarFinCU();
+    }
+
+    //todo: no se estan pasando los tipos de motivos y sus comentarios al cierre, falta agregar eso en el back
+    //todo: LA PROXIMA FABRI POR FAVOR TRABAJÁ EN LA MISMA BRANCH QUE EL RESTO ASÍ NO HAY QUE HACER NADA DE MAS
+
+    //ARREGLADO: si toco el boton continuar sin seleccionar la orden solo desaparece el boton y no pasa nada mas
+    //fixme: si no pongo observacion al confirmar el cierre desaparece todo
+    //fixme: ^^^^^ no se como hacerlo, en el metodo aclaro mejor (aclaro que es lo que NO se hacer)
+    //ARREGLADO: puedo confirmar motivo sin seleccionar nada... ESO ESTÁ MAL
 }

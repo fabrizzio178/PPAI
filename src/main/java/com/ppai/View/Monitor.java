@@ -13,6 +13,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Component
@@ -31,7 +32,6 @@ public class Monitor implements Initializable {
     @FXML private Button botonConfirmarComentario;
     @FXML private Button botonContinuar;
 
-    @FXML private Button botonFinalizarSeleccion;
     @FXML private ComboBox<String> comboMotivos;
 
 
@@ -87,14 +87,47 @@ public class Monitor implements Initializable {
         if (seleccionado != null) {
             String nroSeleccionado = seleccionado.getUserData().toString();
             gestorResultado.tomarSeleccionOrdenInsp(nroSeleccionado);
+            botonContinuar.setVisible(false);
+        } else {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("Advertencia");
+            alerta.setHeaderText(null);
+            alerta.setContentText("Debe seleccionar una orden.");
+            alerta.showAndWait();
         }
-        botonContinuar.setVisible(false);
+
     }
 
     public void pedirObservacion() {
         labelObservacion.setVisible(true);
         campoObservacion.setVisible(true);
         botonConfirmarObservacion.setVisible(true);
+    }
+
+    public void alertaFaltaObservacion() {
+        Alert alerta = new Alert(Alert.AlertType.WARNING);
+        alerta.setTitle("ALERTA");
+        alerta.setHeaderText(null);
+        alerta.setContentText("No se introdujo una observacion");
+        alerta.showAndWait();
+
+        // no se como hacer que vuelva al flujo
+        // porque si le pido la observacion de vuelta, despues aparece la pantalla de seleccion de motivos
+        // y ahi si o si va a tener que seleccionar un motivo mas para continuar
+    }
+
+    public void alertaFaltaMotivo() {
+        Alert alerta = new Alert(Alert.AlertType.WARNING);
+        alerta.setTitle("ALERTA");
+        alerta.setHeaderText(null);
+        alerta.setContentText("No se seleccionó por lo menos un motivo");
+        alerta.showAndWait();
+        ArrayList<String> lista = new ArrayList<>(comboMotivos.getItems());
+        this.solicitarSelTipoMotivo(lista);
+
+        // acá tampoco se como retomar el flujo
+        // aunque creo que como está hecha la interfaz no hace falta esto??
+        // fixme NO SE
     }
 
     public void ingresarObservacion() {
@@ -123,13 +156,11 @@ public class Monitor implements Initializable {
             labelMotivo.setStyle("-fx-font-size: 14px;");
             contenedorMotivos.getChildren().add(labelMotivo);
         }
-
     }
 
     public void solicitarSelTipoMotivo(ArrayList<String> tiposMotivos) {
         contenedorMotivos.getChildren().removeIf(node -> !(node instanceof Label));
         botonConfirmarMotivos.setVisible(true);
-        botonFinalizarSeleccion.setVisible(true); // solicitarConfirmacion()
         // Crear el ComboBox
         ComboBox<String> comboMotivos = new ComboBox<>();
         this.comboMotivos = comboMotivos;
@@ -141,15 +172,6 @@ public class Monitor implements Initializable {
         contenedorMotivos.getChildren().add(comboMotivos);
     }
 
-    @FXML
-    public void confirmaCierre() {
-        gestorResultado.setBanderaSeleccion(false);
-        // Ocultar los controles de selección de motivos
-        contenedorMotivos.setVisible(false);
-        botonFinalizarSeleccion.setVisible(false);
-        botonConfirmarMotivos.setVisible(false);
-
-    }
 
 
     @FXML
@@ -157,17 +179,14 @@ public class Monitor implements Initializable {
         String motivoSeleccionado = comboMotivos.getValue();
 
         if (motivoSeleccionado != null) {
-            // Aquí puedes hacer lo que necesites con el motivo seleccionado
-            System.out.println("Motivo seleccionado: " + motivoSeleccionado);
+            this.gestorResultado.tomarTipoMotivo(motivoSeleccionado);
         } else {
-            // Manejar el caso cuando no hay selección
-            System.out.println("Por favor, seleccione un motivo");
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("ALERTA");
+            alerta.setHeaderText(null);
+            alerta.setContentText("Por favor, seleccione un motivo");
+            alerta.showAndWait();
         }
-
-        this.gestorResultado.tomarTipoMotivo(motivoSeleccionado);
-
-
-
     }
 
     public void pedirComentario() {
@@ -175,7 +194,6 @@ public class Monitor implements Initializable {
         labelComentario.setVisible(true);
         campoComentario.setVisible(true);
         botonConfirmarComentario.setVisible(true);
-        botonFinalizarSeleccion.setVisible(false);
         botonConfirmarMotivos.setVisible(false);
     }
 
@@ -193,49 +211,40 @@ public class Monitor implements Initializable {
 
         gestorResultado.tomarComentario(comentario);
 
-        labelComentario.setVisible(false);
-        campoComentario.setVisible(false);
-        campoComentario.clear();
-        botonConfirmarComentario.setVisible(false);
-
-        ArrayList<String> lista = new ArrayList<>(comboMotivos.getItems());
-
-
-        this.solicitarSelTipoMotivo(lista);
     }
 
-/*    public void solicitarConfirmacion() {
+    public void solicitarConfirmacion() {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmación");
         confirmAlert.setHeaderText(null);
-        confirmAlert.setContentText("¿Está seguro que desea cerrar la orden?");
+        confirmAlert.setContentText("¿Desea cerrar la orden?");
+
+        Button cancelButton = (Button) confirmAlert.getDialogPane().lookupButton(ButtonType.CANCEL);
+        cancelButton.setText("Seguir con la selección de motivos");
+
 
         confirmAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                gestorResultado.getFechaHoraActual();
-                gestorResultado.BuscarEstadoCerradaOI();
-                gestorResultado.buscarFueraDeServicio();
-                gestorResultado.cerrarOrdenInspeccion();
-                gestorResultado.ponerSismografoFueraDeServicio();
+                contenedorMotivos.setVisible(false);
+                labelComentario.setVisible(false);
+                campoComentario.setVisible(false);
+                botonConfirmarComentario.setVisible(false);
 
-                Alert success = new Alert(Alert.AlertType.INFORMATION);
-                success.setTitle("Éxito");
-                success.setHeaderText(null);
-                success.setContentText("¡Orden cerrada con éxito!");
-                success.showAndWait();
+                gestorResultado.tomarConfirmacion();
 
-                enviarMail();
-            } else {
-                Alert cancel = new Alert(Alert.AlertType.INFORMATION);
-                cancel.setTitle("Cancelado");
-                cancel.setHeaderText(null);
-                cancel.setContentText("Se canceló el cierre de la orden.");
-                cancel.showAndWait();
+                // llamar a lo que sigue ACÁ SALE DEL BUCLE
+            } else if (response == ButtonType.CANCEL)  {
+                ArrayList<String> lista = new ArrayList<>(comboMotivos.getItems()); // en el NO
+                this.solicitarSelTipoMotivo(lista); // en el NO
+                labelComentario.setVisible(false);
+                campoComentario.setVisible(false);
+                campoComentario.clear();
+                botonConfirmarComentario.setVisible(false);
+                //deberia repetir el bucle //SI LO HACE JARVIS SI LO HACE TODO SOY VERDEEEEEEEEEEEEEEEEEEEEE
             }
         });
     }
 
- */
 
 
     public void enviarMail() {
@@ -244,5 +253,13 @@ public class Monitor implements Initializable {
         mail.setHeaderText(null);
         mail.setContentText("Mail enviado.");
         mail.showAndWait();
+    }
+
+    public void mostrarFinCU () {
+        Alert fin = new Alert(Alert.AlertType.INFORMATION);
+        fin.setTitle("FIN CU");
+        fin.setHeaderText(null);
+        fin.setContentText("SE TERMINÓ EL CU CARAJO.");
+        fin.showAndWait();
     }
 }
