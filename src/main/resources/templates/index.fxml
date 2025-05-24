@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ppai.View.Monitor">
+   <children>
+      <Label alignment="CENTER" layoutX="155.0" layoutY="14.0" prefHeight="17.0" prefWidth="291.0" text="Cerrar orden de inspeccion ">
+         <font><Font size="18.0" /></font>
+      </Label>
+
+      <Label layoutX="35.0" layoutY="50.0" prefHeight="27.0" prefWidth="160.0" text="Ordenes encontradas:" />
+      <VBox fx:id="contenedorOrdenes" layoutX="19.0" layoutY="78.0" prefHeight="150.0" prefWidth="550.0" spacing="10"/>
+
+      <Label fx:id="labelObservacion" layoutX="35.0" layoutY="240.0" text="Observación:" visible="false"/>
+      <TextField fx:id="campoObservacion" layoutX="120.0" layoutY="236.0" prefWidth="400.0" visible="false"/>
+      <Button fx:id="botonConfirmarObservacion" layoutX="480.0" layoutY="280.0" text="Confirmar" onAction="#ingresarObservacion" visible="false"/>
+
+      <Button layoutX="480.0" layoutY="330.0" onAction="#seleccionaOrdenInsp" text="Continuar" />
+      <VBox fx:id="contenedorMotivos" layoutX="19.0" layoutY="320.0" prefHeight="100.0" prefWidth="550.0" spacing="10" visible="false"/>
+   </children>
+</AnchorPane>
+

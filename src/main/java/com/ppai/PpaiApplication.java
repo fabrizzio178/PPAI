@@ -1,13 +1,14 @@
 package com.ppai;
 
-import org.springframework.boot.SpringApplication;
+import com.ppai.presentacion.MonitorApp;
+import javafx.application.Application;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class PpaiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PpaiApplication.class, args);
+        Application.launch(MonitorApp.class, args);
     }
 
 }

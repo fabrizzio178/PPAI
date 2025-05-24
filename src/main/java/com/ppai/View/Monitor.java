@@ -1,19 +1,61 @@
 package com.ppai.View;
 import com.ppai.Service.GestorResultado;
+import javafx.application.Platform;
+import javafx.fxml.Initializable;
 import lombok.Getter;
 import lombok.Setter;
-import com.ppai.DAO.*;
-import com.ppai.Model.*;
-
+import org.springframework.stereotype.Component;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 @Setter
 @Getter
 
-public class Monitor {
+@Component
+public class Monitor implements Initializable {
     private GestorResultado gestorResultado;
+
+    @FXML
+    private VBox contenedorOrdenes;
+    @FXML
+    private ToggleGroup grupoSeleccionOrden = new ToggleGroup();
+    @FXML
+    private Label labelObservacion;
+    @FXML
+    private TextField campoObservacion;
+    @FXML
+    private Button botonConfirmarObservacion;
+    @FXML
+    private VBox contenedorMotivos;
+    private ArrayList<CheckBox> checkboxesMotivos = new ArrayList<>();
+
+
+    @Override
+    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        Platform.runLater(() -> {
+            try {
+                this.gestorResultado = new GestorResultado();
+                this.gestorResultado.setMonitor(this);
+                this.gestorResultado.hardcodearSesion();
+
+                this.gestorResultado.buscarRILogueado();
+                this.gestorResultado.buscarOrdenesInsp();
+                this.gestorResultado.ordenarPorFechaFinalizacion();
+                this.gestorResultado.mostrarDatos(this.gestorResultado.getTodosSismografos());
+
+                this.solicitarSeleccionOrdenesInspeccionRealizadas(this.gestorResultado.getDatosOrdenInsp());
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
 
 
@@ -27,6 +69,7 @@ public class Monitor {
     public void habilitarVentana() throws SQLException {
         this.gestorResultado = new GestorResultado();
         this.gestorResultado.setMonitor(this);
+        this.gestorResultado.hardcodearSesion();
 //        this.gestorResultado.setTodosTipoMotivo(tiposMotivos);
 
         this.gestorResultado.opCerrarOrdenInspeccion();
@@ -41,19 +84,37 @@ public class Monitor {
             String nombreEstacion = fila.get(2).toString();
             String idSismografo = fila.get(3).toString();
 
-            System.out.println("Nro Orden: " + nroOrden + ", Fecha Finalizacion: " + fechaHoraFinalizacion +
-                    ", Nombre estación: " + nombreEstacion + ", Identificador Sismografo: " + idSismografo);
+            String texto = "Nro Orden: " + nroOrden + ", Fecha Finalizacion: " + fechaHoraFinalizacion +
+                    ", Nombre estación: " + nombreEstacion + ", Identificador Sismografo: " + idSismografo;
+            Label label = new Label(texto);
+            label.setWrapText(true);
+            label.setPrefWidth(400);
+
+            RadioButton rb = new RadioButton();
+            rb.setToggleGroup(grupoSeleccionOrden);
+            rb.setUserData(nroOrden);
+
+            HBox filaUI = new HBox(label, rb);
+            filaUI.setSpacing(10);
+            filaUI.setPrefWidth(550);
+            contenedorOrdenes.getChildren().add(filaUI);
         }
-        seleccionaOrdenInsp();
     }
     // 8 - Toma por teclado la opcion y se la manda al gestor.
     public void seleccionaOrdenInsp() {
-        Scanner scanner = new Scanner(System.in);  // SIMULA UNA INTERFAZ ME TOMA LOS DATOS POR TECLADO
+        RadioButton seleccionado = (RadioButton) grupoSeleccionOrden.getSelectedToggle();
+        if (seleccionado != null) {
+            String nroSeleccionado = seleccionado.getUserData().toString();
+            gestorResultado.tomarSeleccionOrdenInsp(nroSeleccionado);
+            System.out.println("Seleccionaste la orden: " + nroSeleccionado);
 
-        System.out.print("Ingrese el numero de la orden: ");
-        String numeroOrden = scanner.nextLine();
-
-        gestorResultado.tomarSeleccionOrdenInsp(numeroOrden);
+            // Mostrar campo de observación
+            labelObservacion.setVisible(true);
+            campoObservacion.setVisible(true);
+            botonConfirmarObservacion.setVisible(true);
+        } else {
+            System.out.println("No seleccionaste nada");
+        }
     }
     // 11 - Dispara la 13.
     public void pedirObservacion() {
@@ -61,37 +122,54 @@ public class Monitor {
     }
     // 12 - Toma por teclado la observacion y la manda al gestor.
     public void ingresarObservacion() {
-        Scanner scanner = new Scanner(System.in);  // SIMULA UNA INTERFAZ ME TOMA LOS DATOS POR TECLADO
-
-        System.out.print("Ingrese su observación: ");
-        String observacion = scanner.nextLine();
-
+        String observacion = campoObservacion.getText();
         gestorResultado.tomarObservacion(observacion);
+        System.out.println("Observación ingresada: " + observacion);
+
+        // Ocultar los campos
+        labelObservacion.setVisible(false);
+        campoObservacion.setVisible(false);
+        botonConfirmarObservacion.setVisible(false);
+
+        // Mostrar alerta
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Información");
+        alerta.setHeaderText(null);
+        alerta.setContentText("Actualización como Fuera de Servicio permitida");
+        alerta.showAndWait();
+
+        // Continuar flujo
+        gestorResultado.permitirActualizarSismografoComoFS();
+        gestorResultado.buscarMotivos();
+        this.mostrarTiposMotivos(gestorResultado.getTiposMotivosFueraDeServicio());
+        this.solicitarSelTipoMotivo(gestorResultado.getTiposMotivosFueraDeServicio());
+        this.solicitarConfirmacion();
     }
 
     // 16 - Mostrar tipos motivos al usuario.
 
     public void mostrarTiposMotivos(ArrayList<String> tiposMotivos) {
+        contenedorMotivos.setVisible(true);
+        contenedorMotivos.getChildren().clear();
+        checkboxesMotivos.clear();
+
         for (String tipo : tiposMotivos) {
-            System.out.println("Motivo: " + tipo);
-        };
+            CheckBox checkBox = new CheckBox(tipo);
+            contenedorMotivos.getChildren().add(checkBox);
+            checkboxesMotivos.add(checkBox);
+        }
     }
     // 17 - Solicitar que seleccione uno o varios motivos y que por cada uno de ellos agregue un comentario.
 
 
     public void solicitarSelTipoMotivo(ArrayList<String> tiposMotivos) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Ingrese la cantidad de motivos que desea seleccionar: ");
-        Integer cant = scanner.nextInt();
-        scanner.nextLine();
-
-        // ArrayList<String> motivosSeleccionados = new ArrayList<>(); NO HACE FALTA
-        for (int i = 0 ;i < cant; i++) {
-            // motivosSeleccionados.add(selTipoMotivo()); NO HACE FALTA
-            gestorResultado.tomarTipoMotivo(selTipoMotivo());
+        for (CheckBox cb : checkboxesMotivos) {
+            if (cb.isSelected()) {
+                gestorResultado.tomarTipoMotivo(cb.getText());
+            }
         }
-            //return motivosSeleccionados; NO HACE FALTA PORQUE LA CAMBIE POR VOID ANTES ERA ARRAYLIST DE STRINGS
+        // Podés mostrar un campo nuevo para pedir el comentario ahora
+        this.pedirComentario(); // si querés continuar con el flujo
     }
     //18 - Esto es seleccionar un solo motivo y la llamo en el ciclo de arriba.
     public String selTipoMotivo(){

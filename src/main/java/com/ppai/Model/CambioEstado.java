@@ -30,5 +30,11 @@ public class CambioEstado {
         this.motivoFueraServicio = new ArrayList<>();
         this.responsable = responsable;
     }
+
+    public Boolean sosActual(){
+        return this.fechaHoraFin == null;
+    }
+
+
 }
 

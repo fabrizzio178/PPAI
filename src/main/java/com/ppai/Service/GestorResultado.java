@@ -26,11 +26,13 @@ public class GestorResultado {
     private Monitor monitor; // monitor
     // Atributos del gestor de ordenes de inspeccion
     private String ordenInspSeleccionada;
+    private OrdenDeInspeccion ordenInspSeleccionadaObj;
     private String observacion;
     private ArrayList<String> tiposMotivosFueraDeServicio;
     private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados;
     private ArrayList<String> comentarios;
     private String estadoOrdenInspeccionCerrada;
+    private Estado estadoOrdenInspeccionCerradaObj;
     private LocalDateTime fechaHoraActual;
     private String estadoSismografoFueraDeServicio;
 
@@ -230,9 +232,17 @@ public class GestorResultado {
         }
     }
 
-    // 30 - ME TOMO EL PALOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    // 30 - Llama al metodo cerrar de la orden de inspecion. cerrar() setea un estado y setea la fechaHoraCierre
     public void cerrarOrdenInspeccion() {
+        this.ordenInspSeleccionadaObj.cerrar(estadoOrdenInspeccionCerradaObj);
+    }
 
+
+    // 31 - PonerSismografoFueraDeServicio
+    // Este método esta asi porque no teniamos al sismografo previamente seleccionado. Ademas, se respetan las
+    // relaciones dadas en la vista estatica de la realizacion de CU de análisis
+    public void ponerSismografoFueraDeServicio(){
+        this.ordenInspSeleccionadaObj.getEstacionSismologica().getSismografo(todosSismografos).fueraDeServicio(fechaHoraActual);
     }
 
 }

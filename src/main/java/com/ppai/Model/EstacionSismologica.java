@@ -46,6 +46,16 @@ public class EstacionSismologica {
         }
         return resultado;
     }
+
+    // Trae el sismografo que conoce la estacionSismologica correspondiente
+    public Sismografo getSismografo(ArrayList<Sismografo> todosSismografos) {
+        for (Sismografo sismografo : todosSismografos) {
+            if (sismografo.sosMiSismografo(this)) {
+                return sismografo;
+            }
+        }
+        return null;
+    }
 }
 
 

@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 @Getter
 @Setter
@@ -47,5 +48,15 @@ public class Sismografo {
 
     public Boolean sosMiSismografo(EstacionSismologica estacion) {
         return Objects.equals(this.estacionSismologica.getNombre(), estacion.getNombre());
+    }
+
+    // Obtiene el cambio de estado actual, si lo es, le setea una fecha hora de finalizacion
+    public void fueraDeServicio(LocalDateTime fechaHora){
+        for (CambioEstado cambio : this.cambiosEstado) {
+            if(cambio.sosActual()){
+                cambio.setFechaHoraFin(fechaHora);
+            };
+        }
+
     }
 }
