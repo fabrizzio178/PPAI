@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 
 @Component
 public class Monitor implements Initializable {
@@ -85,13 +84,10 @@ public class Monitor implements Initializable {
         if (seleccionado != null) {
             String nroSeleccionado = seleccionado.getUserData().toString();
             gestorResultado.tomarSeleccionOrdenInsp(nroSeleccionado);
-            System.out.println("Seleccionaste la orden: " + nroSeleccionado);
 
             labelObservacion.setVisible(true);
             campoObservacion.setVisible(true);
             botonConfirmarObservacion.setVisible(true);
-        } else {
-            System.out.println("No seleccionaste nada");
         }
     }
 
@@ -102,7 +98,6 @@ public class Monitor implements Initializable {
     public void ingresarObservacion() {
         String observacion = campoObservacion.getText();
         gestorResultado.tomarObservacion(observacion);
-        System.out.println("Observación ingresada: " + observacion);
 
         labelObservacion.setVisible(false);
         campoObservacion.setVisible(false);
@@ -190,18 +185,40 @@ public class Monitor implements Initializable {
     }
 
     public void solicitarConfirmacion() {
-        System.out.println("Está seguro que desea cerrar la orden? (S/N)");
-        confirmarCierre();
-    }
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirmación");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("¿Está seguro que desea cerrar la orden?");
 
-    public void confirmarCierre() {
-        Scanner scanner = new Scanner(System.in);
-        String confirmacion = scanner.nextLine();
-        if (confirmacion.equalsIgnoreCase("s")) {
-            System.out.println("Orden cerrada con éxito!");
-        } else {
-            System.out.println("UY ME CAGUE");
-        }
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                gestorResultado.getFechaHoraActual();
+                gestorResultado.BuscarEstadoCerradaOI();
+                gestorResultado.buscarFueraDeServicio();
+                if (!gestorResultado.validarObservacionExistente()) {
+                    Alert error = new Alert(Alert.AlertType.ERROR);
+                    error.setTitle("Error de Validación");
+                    error.setHeaderText(null);
+                    error.setContentText("Debe ingresar una observación y al menos un motivo.");
+                    error.showAndWait();
+                    return;
+                }
+                gestorResultado.cerrarOrdenInspeccion();
+                gestorResultado.ponerSismografoFueraDeServicio();
+
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Éxito");
+                success.setHeaderText(null);
+                success.setContentText("¡Orden cerrada con éxito!");
+                success.showAndWait();
+            } else {
+                Alert cancel = new Alert(Alert.AlertType.INFORMATION);
+                cancel.setTitle("Cancelado");
+                cancel.setHeaderText(null);
+                cancel.setContentText("Se canceló el cierre de la orden.");
+                cancel.showAndWait();
+            }
+        });
     }
 
     public void pedirComentario() {

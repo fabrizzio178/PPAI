@@ -151,6 +151,14 @@ public class GestorResultado {
 
     public void tomarSeleccionOrdenInsp(String ordenInsp) {
         this.ordenInspSeleccionada = ordenInsp;
+
+        // Buscar la orden real y setearla
+        for (OrdenDeInspeccion orden : ordenesInsp) {
+            if (String.valueOf(orden.getNumeroOrden()).equals(ordenInsp)) {
+                this.ordenInspSeleccionadaObj = orden;
+                break;
+            }
+        }
     }
 
     // 10 - Dispara al monitor para que pida una observacion.

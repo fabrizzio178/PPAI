@@ -11,7 +11,7 @@
       </Label>
 
       <Label layoutX="35.0" layoutY="50.0" prefHeight="27.0" prefWidth="160.0" text="Ordenes encontradas:" />
-      <VBox fx:id="contenedorOrdenes" layoutX="19.0" layoutY="78.0" prefHeight="150.0" prefWidth="550.0" spacing="10" />
+      <VBox fx:id="contenedorOrdenes" layoutX="19.0" layoutY="78.0" prefHeight="150.0" prefWidth="550.0" spacing="10" style="-fx-background-color: red;" />
 
       <Label fx:id="labelObservacion" layoutX="35.0" layoutY="240.0" text="Observación:" visible="false" />
       <TextField fx:id="campoObservacion" layoutX="120.0" layoutY="236.0" prefWidth="400.0" visible="false" />
@@ -21,7 +21,7 @@
       <VBox fx:id="contenedorMotivos" layoutX="19.0" layoutY="320.0" prefHeight="97.0" prefWidth="437.0" spacing="10" visible="false" />
       <Button fx:id="botonConfirmarMotivos" layoutX="467.0" layoutY="430.0" onAction="#solicitarSelTipoMotivo" prefHeight="25.0" prefWidth="128.0" text="Confirmar Motivos" textAlignment="CENTER" visible="false" />
       <Label fx:id="labelComentario" layoutX="35.0" layoutY="470.0" text="Comentario:" visible="false" />
-      <TextField fx:id="campoComentario" layoutX="285.0" layoutY="466.0" prefHeight="25.0" prefWidth="235.0" visible="false" />
+      <TextField fx:id="campoComentario" layoutX="319.0" layoutY="466.0" prefHeight="17.0" prefWidth="229.0" visible="false" />
       <Button fx:id="botonConfirmarComentario" layoutX="480.0" layoutY="500.0" onAction="#confirmarComentario" text="Confirmar Comentario" visible="false" />
 
 
