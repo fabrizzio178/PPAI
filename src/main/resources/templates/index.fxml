@@ -11,14 +11,15 @@
       </Label>
 
       <Label layoutX="35.0" layoutY="50.0" prefHeight="27.0" prefWidth="160.0" text="Ordenes encontradas:" />
-      <VBox fx:id="contenedorOrdenes" layoutX="19.0" layoutY="78.0" prefHeight="150.0" prefWidth="550.0" spacing="10"/>
+      <VBox fx:id="contenedorOrdenes" layoutX="19.0" layoutY="78.0" prefHeight="150.0" prefWidth="550.0" spacing="10" />
 
-      <Label fx:id="labelObservacion" layoutX="35.0" layoutY="240.0" text="Observación:" visible="false"/>
-      <TextField fx:id="campoObservacion" layoutX="120.0" layoutY="236.0" prefWidth="400.0" visible="false"/>
-      <Button fx:id="botonConfirmarObservacion" layoutX="480.0" layoutY="280.0" text="Confirmar" onAction="#ingresarObservacion" visible="false"/>
+      <Label fx:id="labelObservacion" layoutX="35.0" layoutY="240.0" text="Observación:" visible="false" />
+      <TextField fx:id="campoObservacion" layoutX="120.0" layoutY="236.0" prefWidth="400.0" visible="false" />
+      <Button fx:id="botonConfirmarObservacion" layoutX="480.0" layoutY="280.0" onAction="#ingresarObservacion" text="Confirmar" visible="false" />
 
       <Button layoutX="480.0" layoutY="330.0" onAction="#seleccionaOrdenInsp" text="Continuar" />
-      <VBox fx:id="contenedorMotivos" layoutX="19.0" layoutY="320.0" prefHeight="100.0" prefWidth="550.0" spacing="10" visible="false"/>
+      <VBox fx:id="contenedorMotivos" layoutX="19.0" layoutY="320.0" prefHeight="97.0" prefWidth="437.0" spacing="10" visible="false" />
+      <Button fx:id="botonConfirmarMotivos" layoutX="467.0" layoutY="430.0" onAction="#solicitarSelTipoMotivo" prefHeight="25.0" prefWidth="128.0" text="Confirmar Motivos" visible="false" />
+
    </children>
 </AnchorPane>
-

@@ -110,7 +110,7 @@ public class GestorResultado {
         permitirActualizarSismografoComoFS(); // ?????????
         buscarMotivos();
         monitor.mostrarTiposMotivos(tiposMotivosFueraDeServicio);
-        monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio);
+        monitor.solicitarSelTipoMotivo();
 
         monitor.solicitarConfirmacion();
     }

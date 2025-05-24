@@ -1,4 +1,5 @@
 package com.ppai.View;
+
 import com.ppai.Service.GestorResultado;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
@@ -9,35 +10,32 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 @Setter
 @Getter
-
 @Component
 public class Monitor implements Initializable {
     private GestorResultado gestorResultado;
 
-    @FXML
-    private VBox contenedorOrdenes;
-    @FXML
-    private ToggleGroup grupoSeleccionOrden = new ToggleGroup();
-    @FXML
-    private Label labelObservacion;
-    @FXML
-    private TextField campoObservacion;
-    @FXML
-    private Button botonConfirmarObservacion;
-    @FXML
-    private VBox contenedorMotivos;
+    @FXML private VBox contenedorOrdenes;
+    @FXML private ToggleGroup grupoSeleccionOrden = new ToggleGroup();
+    @FXML private Label labelObservacion;
+    @FXML private TextField campoObservacion;
+    @FXML private Button botonConfirmarObservacion;
+    @FXML private VBox contenedorMotivos;
+    @FXML private Button botonConfirmarMotivos;
+
     private ArrayList<CheckBox> checkboxesMotivos = new ArrayList<>();
 
-
     @Override
-    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
             try {
                 this.gestorResultado = new GestorResultado();
@@ -50,33 +48,12 @@ public class Monitor implements Initializable {
                 this.gestorResultado.mostrarDatos(this.gestorResultado.getTodosSismografos());
 
                 this.solicitarSeleccionOrdenesInspeccionRealizadas(this.gestorResultado.getDatosOrdenInsp());
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
     }
 
-
-
-    // 0 - Arranca todo el programa DIOS POR QUE ES VERDE ESTO
-    public void cerrarOrdenInsp() throws SQLException {
-        this.habilitarVentana();
-
-    }
-
-    // 1 - Habilita la ventana creando el gestor de resultados y le dispara la opcion cerrar orden inspeccion
-    public void habilitarVentana() throws SQLException {
-        this.gestorResultado = new GestorResultado();
-        this.gestorResultado.setMonitor(this);
-        this.gestorResultado.hardcodearSesion();
-//        this.gestorResultado.setTodosTipoMotivo(tiposMotivos);
-
-        this.gestorResultado.opCerrarOrdenInspeccion();
-    }
-
-    // 7 - Mas que solicitar le muestra el resultado de las busquedas previas como string, y despues
-    // dispara la funcion que le pide que seleccione.
     public void solicitarSeleccionOrdenesInspeccionRealizadas(ArrayList<ArrayList<Object>> ordenes) {
         for (ArrayList<Object> fila : ordenes) {
             String nroOrden = fila.get(0).toString();
@@ -86,6 +63,7 @@ public class Monitor implements Initializable {
 
             String texto = "Nro Orden: " + nroOrden + ", Fecha Finalizacion: " + fechaHoraFinalizacion +
                     ", Nombre estación: " + nombreEstacion + ", Identificador Sismografo: " + idSismografo;
+
             Label label = new Label(texto);
             label.setWrapText(true);
             label.setPrefWidth(400);
@@ -100,7 +78,7 @@ public class Monitor implements Initializable {
             contenedorOrdenes.getChildren().add(filaUI);
         }
     }
-    // 8 - Toma por teclado la opcion y se la manda al gestor.
+
     public void seleccionaOrdenInsp() {
         RadioButton seleccionado = (RadioButton) grupoSeleccionOrden.getSelectedToggle();
         if (seleccionado != null) {
@@ -116,17 +94,16 @@ public class Monitor implements Initializable {
             System.out.println("No seleccionaste nada");
         }
     }
-    // 11 - Dispara la 13.
+
     public void pedirObservacion() {
         ingresarObservacion();
     }
-    // 12 - Toma por teclado la observacion y la manda al gestor.
+
     public void ingresarObservacion() {
         String observacion = campoObservacion.getText();
         gestorResultado.tomarObservacion(observacion);
         System.out.println("Observación ingresada: " + observacion);
 
-        // Ocultar los campos
         labelObservacion.setVisible(false);
         campoObservacion.setVisible(false);
         botonConfirmarObservacion.setVisible(false);
@@ -138,18 +115,15 @@ public class Monitor implements Initializable {
         alerta.setContentText("Actualización como Fuera de Servicio permitida");
         alerta.showAndWait();
 
-        // Continuar flujo
+        // Continuar con flujo
         gestorResultado.permitirActualizarSismografoComoFS();
         gestorResultado.buscarMotivos();
         this.mostrarTiposMotivos(gestorResultado.getTiposMotivosFueraDeServicio());
-        this.solicitarSelTipoMotivo(gestorResultado.getTiposMotivosFueraDeServicio());
-        this.solicitarConfirmacion();
     }
-
-    // 16 - Mostrar tipos motivos al usuario.
 
     public void mostrarTiposMotivos(ArrayList<String> tiposMotivos) {
         contenedorMotivos.setVisible(true);
+        botonConfirmarMotivos.setVisible(true);
         contenedorMotivos.getChildren().clear();
         checkboxesMotivos.clear();
 
@@ -159,53 +133,53 @@ public class Monitor implements Initializable {
             checkboxesMotivos.add(checkBox);
         }
     }
-    // 17 - Solicitar que seleccione uno o varios motivos y que por cada uno de ellos agregue un comentario.
 
+    @FXML
+    public void solicitarSelTipoMotivo() {
+        boolean seleccionoAlMenosUno = false;
 
-    public void solicitarSelTipoMotivo(ArrayList<String> tiposMotivos) {
         for (CheckBox cb : checkboxesMotivos) {
             if (cb.isSelected()) {
                 gestorResultado.tomarTipoMotivo(cb.getText());
+                seleccionoAlMenosUno = true;
             }
         }
-        // Podés mostrar un campo nuevo para pedir el comentario ahora
-        this.pedirComentario(); // si querés continuar con el flujo
-    }
-    //18 - Esto es seleccionar un solo motivo y la llamo en el ciclo de arriba.
-    public String selTipoMotivo(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el motivo: ");
-        return scanner.nextLine();
-    }
 
-    // 20 - Pide un comentario al usuario por cada tipo motivo.
+        if (seleccionoAlMenosUno) {
+            contenedorMotivos.setVisible(false);
+            botonConfirmarMotivos.setVisible(false);
+            this.pedirComentario();
+        } else {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("Advertencia");
+            alerta.setHeaderText(null);
+            alerta.setContentText("Debe seleccionar al menos un motivo.");
+            alerta.showAndWait();
+        }
+    }
 
     public void pedirComentario() {
-
         System.out.println("Ingrese el comentario: ");
         gestorResultado.tomarComentario(tomarComentario());
-        }
+    }
 
-    // 21 - Funcion pelotuda que solo la hago para cumplir el diagrama de secuencia.
-    public String tomarComentario (){
+    public String tomarComentario() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
-    // 23 - Solicita que el usuario confirme la accion.
-    public void solicitarConfirmacion(){
-        System.out.println("Esta seguro que desea cerrar la orden? (S/N)");
+
+    public void solicitarConfirmacion() {
+        System.out.println("Está seguro que desea cerrar la orden? (S/N)");
         confirmarCierre();
     }
 
-    // 24 - Toma la confirmacion del usuario si acepta,
     public void confirmarCierre() {
         Scanner scanner = new Scanner(System.in);
         String confirmacion = scanner.nextLine();
         if (confirmacion.equalsIgnoreCase("s")) {
-            System.out.println("Orden cerrada con exito!");
+            System.out.println("Orden cerrada con éxito!");
         } else {
             System.out.println("UY ME CAGUE");
         }
     }
-
 }
