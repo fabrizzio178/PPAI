@@ -56,9 +56,11 @@ public class Monitor {
         gestorResultado.tomarSeleccionOrdenInsp(numeroOrden);
     }
     // 11 - Dispara la 13.
+
     public void pedirObservacion() {
         ingresarObservacion();
     }
+
     // 12 - Toma por teclado la observacion y la manda al gestor.
     public void ingresarObservacion() {
         Scanner scanner = new Scanner(System.in);  // SIMULA UNA INTERFAZ ME TOMA LOS DATOS POR TECLADO

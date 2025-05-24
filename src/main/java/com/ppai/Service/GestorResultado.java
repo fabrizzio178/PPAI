@@ -65,6 +65,11 @@ public class GestorResultado {
 
         OrdenDeInspeccionDAO ordenDeInspeccionDAO = new OrdenDeInspeccionDAO();
         this.todosOrdenInspeccion = ordenDeInspeccionDAO.getAllOrdenes();
+
+        //TESTEAR FA
+
+        //this.todosOrdenInspeccion.remove(0);
+        //this.todosOrdenInspeccion.remove(0);
     }
 
 
@@ -109,8 +114,12 @@ public class GestorResultado {
         buscarMotivos();
         monitor.mostrarTiposMotivos(tiposMotivosFueraDeServicio);
         monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio);
-
         monitor.solicitarConfirmacion();
+
+        validarObservacionExistente();
+        validarMotivoExistente();
+        buscarEstadoCerradaOI();
+
     }
     // 3 - Busca al responsable de inspeccion logueado (le pregunta a la sesion actual).
 
@@ -126,6 +135,10 @@ public class GestorResultado {
         for(OrdenDeInspeccion orden : todosOrdenInspeccion) {
             if(orden.sosCompletamenteRealizada() && orden.sosDeEmpleado(this.usuarioLogueado)){
                 ordenesInsp.add(orden);
+            }
+            else{
+                System.out.println("No hay ordenes de inspeccion realizadas o pertenecientes al empleado logueado");
+                System.exit(1);
             }
         }
     }
@@ -174,6 +187,7 @@ public class GestorResultado {
         for (TipoMotivo tipoMotivo : todosTipoMotivo ) {
             tiposMotivosFueraDeServicio.add(tipoMotivo.getDescripcion());
         }
+        this.tiposMotivosFueraDeServicioSeleccionados = new ArrayList<>(); // crea el array vacio acá pq si no al tomar los motivos, si está vacio da error pq no existe
     }
     // 19 - Toma los tipos de datos ingresados en el loop del monitor. TIPO SON OBJETOS
 
@@ -191,20 +205,31 @@ public class GestorResultado {
     }
 
     // 25 - Validar que la observacion no este vacia y haya elegido al menos un motivo.
-    // Si esto da false es un caso alternativo.
-    public boolean validarObservacionExistente() {
-        if (observacion.isEmpty()) {
-            return false;
+    // Si esto da false es un caso alternativo.            VOY A CAMBIARLA DE BOOLEAN A VOID PQ NO DEBERIA RETORNAR NADA CREO
+    public void validarObservacionExistente() {
+        if (observacion.isEmpty()) { //
+            System.out.println("No hay observaciones CARAJO"); // Este mensaje se debe mostrar en pantalla.
+            pedirObservacion();
+            validarObservacionExistente();
         } else {
-            return validarMotivoExistente(); // No se si esto deberia ir por fuera o no del metodo, por el diagrama de secuencia
+            validarMotivoExistente(); // No se si esto deberia ir por fuera o no del metodo, por el diagrama de secuencia
         }
     }
 
-    // 26- Validar motivo existente, podria ir en la funcion 25 pero hay que respetar el diagrama de secuencia.
 
-    public boolean validarMotivoExistente (){
-        return !tiposMotivosFueraDeServicioSeleccionados.isEmpty();
+    // 26- Validar motivo existente, podria ir en la funcion 25 pero hay que respetar el diagrama de secuencia.
+    // HAY QUE MODIFICAR ESTE PARA EL CASO DE USO
+
+    public boolean validarMotivoExistente() {
+        if (tiposMotivosFueraDeServicioSeleccionados.isEmpty()) {
+            System.out.println("No hay motivos seleccionados");
+            monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio); // volver a pedir motivos
+            return validarMotivoExistente(); // volvés a validar luego de que el usuario seleccione
+        } else {
+            return true;
+        }
     }
+
 
     // 27 - Busca en todos los estados y pregunta si es ambito orden inspeccion y si es cerrada.
     public void buscarEstadoCerradaOI() {
@@ -244,8 +269,4 @@ public class GestorResultado {
                 estadoSismografoFueraDeServicio,usuarioLogueado,tiposMotivosFueraDeServicioSeleccionadosObjetos,comentarios);
         // EL ERROR ES PORQUE TRABAJAMOS CON STRINGS Y ME PIDE TRABAJAR CON OBJETOS (creamos el tiposMotivosObjetos para que !!!!!!!!!
     }
-
-
-
-    
 }
