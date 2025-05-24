@@ -19,7 +19,8 @@
 
       <Button layoutX="480.0" layoutY="330.0" onAction="#seleccionaOrdenInsp" text="Continuar" />
       <VBox fx:id="contenedorMotivos" layoutX="19.0" layoutY="320.0" prefHeight="97.0" prefWidth="437.0" spacing="10" visible="false" />
-      <Button fx:id="botonConfirmarMotivos" layoutX="467.0" layoutY="430.0" onAction="#solicitarSelTipoMotivo" prefHeight="25.0" prefWidth="128.0" text="Confirmar Motivos" visible="false" />
+      <Button fx:id="botonConfirmarMotivos" layoutX="467.0" layoutY="430.0" onAction="#solicitarSelTipoMotivo" prefHeight="25.0" prefWidth="128.0" text="Confirmar Motivos" textAlignment="CENTER" visible="false" />
+
 
    </children>
 </AnchorPane>

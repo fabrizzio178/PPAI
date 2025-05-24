@@ -32,6 +32,7 @@ public class Monitor implements Initializable {
     @FXML private VBox contenedorMotivos;
     @FXML private Button botonConfirmarMotivos;
 
+
     private ArrayList<CheckBox> checkboxesMotivos = new ArrayList<>();
 
     @Override
