@@ -35,6 +35,13 @@ public class GestorResultado {
     private Estado estadoOrdenInspeccionCerradaObj;
     private LocalDateTime fechaHoraActual;
     private String estadoSismografoFueraDeServicio;
+    private Empleado usuarioLogueado;
+    private ArrayList<OrdenDeInspeccion> ordenesInsp;
+    private ArrayList<ArrayList<Object>> datosOrdenInsp;
+
+    private Boolean banderaSeleccion;
+
+
 
     public GestorResultado() throws SQLException {
 //        RolDAO rolDAO = new RolDAO();
@@ -91,28 +98,24 @@ public class GestorResultado {
 
 
 
-    //Atributos del gestor
-    private Empleado usuarioLogueado;
-    private ArrayList<OrdenDeInspeccion> ordenesInsp;
-    private ArrayList<ArrayList<Object>> datosOrdenInsp;
 
     // 2 - Funcion que va a disparar todas las funciones del gestor (creo).
     public void opCerrarOrdenInspeccion() {
         this.hardcodearSesion();
 
 
-        this.buscarRILogueado();
-        this.buscarOrdenesInsp();
-        ordenarPorFechaFinalizacion();
-        this.mostrarDatos(this.todosSismografos);
-        monitor.solicitarSeleccionOrdenesInspeccionRealizadas(datosOrdenInsp);
-        pedirObservacion();
-        permitirActualizarSismografoComoFS(); // ?????????
-        buscarMotivos();
-        monitor.mostrarTiposMotivos(tiposMotivosFueraDeServicio);
-        monitor.solicitarSelTipoMotivo();
 
-        monitor.solicitarConfirmacion();
+        this.buscarRILogueado(); // 3
+        this.buscarOrdenesInsp(); // 4
+        ordenarPorFechaFinalizacion(); // 5
+        this.mostrarDatos(this.todosSismografos); // 6
+        monitor.solicitarSeleccionOrdenesInspeccionRealizadas(datosOrdenInsp); // 7 y 8
+        //pedirObservacion();
+
+
+        // monitor.solicitarSelTipoMotivo();
+
+        //monitor.solicitarConfirmacion();
     }
     // 3 - Busca al responsable de inspeccion logueado (le pregunta a la sesion actual).
 
@@ -159,6 +162,8 @@ public class GestorResultado {
                 break;
             }
         }
+
+        this.pedirObservacion();
     }
 
     // 10 - Dispara al monitor para que pida una observacion.
@@ -170,6 +175,8 @@ public class GestorResultado {
     // 13 - Toma la observacion del usuario ingreada por teclado en el monitor
     public void tomarObservacion(String observacion){
         this.observacion = observacion;
+        this.permitirActualizarSismografoComoFS();
+        this.buscarMotivos();
     }
 
     // 14 - Permite acutalizar??? ¯\_(ツ)_/¯
@@ -184,11 +191,36 @@ public class GestorResultado {
         for (TipoMotivo tipoMotivo : todosTipoMotivo ) {
             tiposMotivosFueraDeServicio.add(tipoMotivo.getDescripcion());
         }
+        monitor.mostrarTiposMotivos(tiposMotivosFueraDeServicio);
+        this.solicitarSelMotivos();
     }
+
+    // 16** (NO SE SI ES 16)
+    public void solicitarSelMotivos() {
+        this.tiposMotivosFueraDeServicioSeleccionados = new ArrayList<>();
+        this.comentarios = new ArrayList<>();
+        this.banderaSeleccion = true;
+
+        monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio);
+
+
+        /* while (banderaSeleccion) {
+            monitor.solicitarSelTipoMotivo();
+        }
+        monitor.solicitarConfirmacion(); */
+
+        /*if (banderaSeleccion) {
+            monitor.solicitarSelTipoMotivo();
+        } else {
+            monitor.solicitarConfirmacion();
+        }*/
+    }
+
+
     // 19 - Toma los tipos de datos ingresados en el loop del monitor.
 
     public void tomarTipoMotivo (String tipo) {
-        this.tiposMotivosFueraDeServicioSeleccionados = new ArrayList<>();
+
         this.tiposMotivosFueraDeServicioSeleccionados.add(tipo);
         monitor.pedirComentario();
     }
@@ -196,8 +228,8 @@ public class GestorResultado {
     // 22 - Toma el comentario ingreado por teclado en el monitor.
 
     public void tomarComentario(String comentario) {
-        this.comentarios = new ArrayList<>();
         this.comentarios.add(comentario);
+
     }
 
     // 25 - Validar que la observacion no este vacia y haya elegido al menos un motivo.

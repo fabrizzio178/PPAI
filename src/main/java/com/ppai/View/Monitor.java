@@ -20,7 +20,7 @@ public class Monitor implements Initializable {
     private GestorResultado gestorResultado;
 
     @FXML private VBox contenedorOrdenes;
-    @FXML private ToggleGroup grupoSeleccionOrden = new ToggleGroup();
+    @FXML private ToggleGroup cmbOrdenesInspeccionesRealizadas = new ToggleGroup();
     @FXML private Label labelObservacion;
     @FXML private TextField campoObservacion;
     @FXML private Button botonConfirmarObservacion;
@@ -29,6 +29,16 @@ public class Monitor implements Initializable {
     @FXML private Label labelComentario;
     @FXML private TextField campoComentario;
     @FXML private Button botonConfirmarComentario;
+    @FXML private Button botonContinuar;
+
+    @FXML private Button botonFinalizarSeleccion;
+    @FXML private ComboBox<String> comboMotivos;
+
+
+
+    @FXML private ToggleGroup grupoMotivos = new ToggleGroup(); // Nuevo campo
+    @FXML private ArrayList<RadioButton> radioButtonsMotivos = new ArrayList<>(); // Reemplaza checkboxesMotivos
+
 
     private ArrayList<CheckBox> checkboxesMotivos = new ArrayList<>();
     private ArrayList<String> motivosSeleccionados = new ArrayList<>();
@@ -40,14 +50,7 @@ public class Monitor implements Initializable {
             try {
                 this.gestorResultado = new GestorResultado();
                 this.gestorResultado.setMonitor(this);
-                this.gestorResultado.hardcodearSesion();
-
-                this.gestorResultado.buscarRILogueado();
-                this.gestorResultado.buscarOrdenesInsp();
-                this.gestorResultado.ordenarPorFechaFinalizacion();
-                this.gestorResultado.mostrarDatos(this.gestorResultado.getTodosSismografos());
-
-                this.solicitarSeleccionOrdenesInspeccionRealizadas(this.gestorResultado.getDatosOrdenInsp());
+                this.gestorResultado.opCerrarOrdenInspeccion();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -69,7 +72,7 @@ public class Monitor implements Initializable {
             label.setPrefWidth(400);
 
             RadioButton rb = new RadioButton();
-            rb.setToggleGroup(grupoSeleccionOrden);
+            rb.setToggleGroup(cmbOrdenesInspeccionesRealizadas);
             rb.setUserData(nroOrden);
 
             HBox filaUI = new HBox(label, rb);
@@ -80,19 +83,18 @@ public class Monitor implements Initializable {
     }
 
     public void seleccionaOrdenInsp() {
-        RadioButton seleccionado = (RadioButton) grupoSeleccionOrden.getSelectedToggle();
+        RadioButton seleccionado = (RadioButton) cmbOrdenesInspeccionesRealizadas.getSelectedToggle();
         if (seleccionado != null) {
             String nroSeleccionado = seleccionado.getUserData().toString();
             gestorResultado.tomarSeleccionOrdenInsp(nroSeleccionado);
-
-            labelObservacion.setVisible(true);
-            campoObservacion.setVisible(true);
-            botonConfirmarObservacion.setVisible(true);
         }
+        botonContinuar.setVisible(false);
     }
 
     public void pedirObservacion() {
-        ingresarObservacion();
+        labelObservacion.setVisible(true);
+        campoObservacion.setVisible(true);
+        botonConfirmarObservacion.setVisible(true);
     }
 
     public void ingresarObservacion() {
@@ -108,57 +110,77 @@ public class Monitor implements Initializable {
         alerta.setHeaderText(null);
         alerta.setContentText("Actualización como Fuera de Servicio permitida");
         alerta.showAndWait();
-
-        gestorResultado.permitirActualizarSismografoComoFS();
-        gestorResultado.buscarMotivos();
-        mostrarTiposMotivos(gestorResultado.getTiposMotivosFueraDeServicio());
     }
 
     public void mostrarTiposMotivos(ArrayList<String> tiposMotivos) {
         contenedorMotivos.setVisible(true);
-        botonConfirmarMotivos.setVisible(true);
         contenedorMotivos.getChildren().clear();
-        checkboxesMotivos.clear();
 
+        // Por cada tipo de motivo, crear un Label y agregarlo al contenedor
         for (String tipo : tiposMotivos) {
-            CheckBox checkBox = new CheckBox(tipo);
-            contenedorMotivos.getChildren().add(checkBox);
-            checkboxesMotivos.add(checkBox);
+            Label labelMotivo = new Label(tipo);
+            // Opcional: dar estilo al label
+            labelMotivo.setStyle("-fx-font-size: 14px;");
+            contenedorMotivos.getChildren().add(labelMotivo);
         }
+
+    }
+
+    public void solicitarSelTipoMotivo(ArrayList<String> tiposMotivos) {
+        contenedorMotivos.getChildren().removeIf(node -> !(node instanceof Label));
+        botonConfirmarMotivos.setVisible(true);
+        botonFinalizarSeleccion.setVisible(true); // solicitarConfirmacion()
+        // Crear el ComboBox
+        ComboBox<String> comboMotivos = new ComboBox<>();
+        this.comboMotivos = comboMotivos;
+        // Agregar todos los tipos de motivos
+        comboMotivos.getItems().addAll(tiposMotivos);
+        // Establecer un prompt text (texto que se muestra cuando no hay selección)
+        comboMotivos.setPromptText("Seleccione un motivo");
+        // Agregar el ComboBox al contenedor
+        contenedorMotivos.getChildren().add(comboMotivos);
     }
 
     @FXML
-    public void solicitarSelTipoMotivo() {
-        motivosSeleccionados.clear();
-        for (CheckBox cb : checkboxesMotivos) {
-            if (cb.isSelected()) {
-                motivosSeleccionados.add(cb.getText());
-            }
-        }
+    public void confirmaCierre() {
+        gestorResultado.setBanderaSeleccion(false);
+        // Ocultar los controles de selección de motivos
+        contenedorMotivos.setVisible(false);
+        botonFinalizarSeleccion.setVisible(false);
+        botonConfirmarMotivos.setVisible(false);
 
-        if (motivosSeleccionados.isEmpty()) {
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("Advertencia");
-            alerta.setHeaderText(null);
-            alerta.setContentText("Debe seleccionar al menos un motivo.");
-            alerta.showAndWait();
-        } else {
-            contenedorMotivos.setVisible(false);
-            botonConfirmarMotivos.setVisible(false);
-            indiceMotivoActual = 0;
-            mostrarCampoComentario();
-        }
     }
 
-    private void mostrarCampoComentario() {
-        labelComentario.setText("Comentario para: " + motivosSeleccionados.get(indiceMotivoActual));
+
+    @FXML
+    public void seleccionaTipoMotivo() { // lee las checkbox
+        String motivoSeleccionado = comboMotivos.getValue();
+
+        if (motivoSeleccionado != null) {
+            // Aquí puedes hacer lo que necesites con el motivo seleccionado
+            System.out.println("Motivo seleccionado: " + motivoSeleccionado);
+        } else {
+            // Manejar el caso cuando no hay selección
+            System.out.println("Por favor, seleccione un motivo");
+        }
+
+        this.gestorResultado.tomarTipoMotivo(motivoSeleccionado);
+
+
+
+    }
+
+    public void pedirComentario() {
+        labelComentario.setText("Comentario para: " + comboMotivos.getValue());
         labelComentario.setVisible(true);
         campoComentario.setVisible(true);
         botonConfirmarComentario.setVisible(true);
+        botonFinalizarSeleccion.setVisible(false);
+        botonConfirmarMotivos.setVisible(false);
     }
 
     @FXML
-    public void confirmarComentario() {
+    public void tomarComentario() {
         String comentario = campoComentario.getText();
         if (comentario.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -169,22 +191,20 @@ public class Monitor implements Initializable {
             return;
         }
 
-        gestorResultado.tomarTipoMotivo(motivosSeleccionados.get(indiceMotivoActual));
         gestorResultado.tomarComentario(comentario);
-        campoComentario.clear();
 
-        indiceMotivoActual++;
-        if (indiceMotivoActual < motivosSeleccionados.size()) {
-            mostrarCampoComentario();
-        } else {
-            labelComentario.setVisible(false);
-            campoComentario.setVisible(false);
-            botonConfirmarComentario.setVisible(false);
-            solicitarConfirmacion();
-        }
+        labelComentario.setVisible(false);
+        campoComentario.setVisible(false);
+        campoComentario.clear();
+        botonConfirmarComentario.setVisible(false);
+
+        ArrayList<String> lista = new ArrayList<>(comboMotivos.getItems());
+
+
+        this.solicitarSelTipoMotivo(lista);
     }
 
-    public void solicitarConfirmacion() {
+/*    public void solicitarConfirmacion() {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmación");
         confirmAlert.setHeaderText(null);
@@ -215,9 +235,8 @@ public class Monitor implements Initializable {
         });
     }
 
-    public void pedirComentario() {
-        mostrarCampoComentario();
-    }
+ */
+
 
     public void enviarMail() {
         Alert mail = new Alert(Alert.AlertType.INFORMATION);
