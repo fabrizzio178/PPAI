@@ -115,6 +115,10 @@ public class Monitor implements Initializable {
         dialog.setHeaderText(null);
         dialog.setContentText("Por favor, ingrese una observacion:");
 
+        dialog.getDialogPane().getButtonTypes().clear();
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+
+
         Optional<String> resultado = dialog.showAndWait();
         if (resultado.isPresent()) {
             String textoIngresado = resultado.get();
