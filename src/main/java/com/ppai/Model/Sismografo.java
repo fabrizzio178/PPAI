@@ -56,9 +56,8 @@ public class Sismografo {
             if (cambio.sosActual()) {
                 cambio.setFechaHoraFin(fechaHora);
                 CambioEstado fueraServicio = new CambioEstado(fechaHora, null, estadoCerrado, responsable);
-                fueraServicio.cargarMotivos(motivos, comentarios); //ARREGLEN ESTO SE ARREGLO les puse el ; yo inutiles de mierda todo hola soy verde
-                // NombreClase nombreObjeto = new NombreClase();
-                System.out.println("hola soy el estado actual"); //TODO OBLITERAR (funciona, lo dejo para dsp cuando revisemos)
+                fueraServicio.cargarMotivos(motivos, comentarios);
+
             }
             ;
         }

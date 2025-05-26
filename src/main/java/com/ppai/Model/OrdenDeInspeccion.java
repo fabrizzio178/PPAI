@@ -46,16 +46,16 @@ public class OrdenDeInspeccion {
         this.empleado = empleado;
     }
 
-    public Boolean sosDeEmpleado (Empleado empleado) {
+    public Boolean sosDeEmpleado (Empleado empleado) { // compara nombre y apellido
         return Objects.equals(this.empleado.getNombre(), empleado.getNombre()) && Objects.equals(this.empleado.getApellido(), empleado.getApellido());
     }
 
-    public Boolean sosCompletamenteRealizada() {
+    public Boolean sosCompletamenteRealizada() { // pregunta al estado si es del ambito OI y es completamente realizada
         return this.estado.sosAmbitoOrdenInspeccion() && this.estado.sosCompletamenteRealizada();
 
     }
 
-    public ArrayList<Object> getDatosOI(ArrayList<Sismografo> todosSismografos) {           // ESTO SERIA MUCHO MAS FACIL SI ESTUVIERA DISTINTO EL DIAGRAMA DE SECUENCIA
+    public ArrayList<Object> getDatosOI(ArrayList<Sismografo> todosSismografos) {
         ArrayList<Object> datos = new ArrayList<>();
         datos.add(this.numeroOrden);
         datos.add(this.fechaHoraFinalizacion);

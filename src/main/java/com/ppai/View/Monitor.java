@@ -18,7 +18,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Component
@@ -41,25 +40,21 @@ public class Monitor implements Initializable {
 
 
 
-    @FXML private ToggleGroup grupoMotivos = new ToggleGroup(); // Nuevo campo
-    @FXML private ArrayList<RadioButton> radioButtonsMotivos = new ArrayList<>(); // Reemplaza checkboxesMotivos
-
-
-    private ArrayList<CheckBox> checkboxesMotivos = new ArrayList<>();
-    private ArrayList<String> motivosSeleccionados = new ArrayList<>();
-    private int indiceMotivoActual = 0;
-
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) { // cerrarOrdenInsp()
         Platform.runLater(() -> {
             try {
-                this.gestorResultado = new GestorResultado();
-                this.gestorResultado.setMonitor(this);
-                this.gestorResultado.opCerrarOrdenInspeccion();
+                this.habilitarVentana();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void habilitarVentana() throws SQLException {
+        this.gestorResultado = new GestorResultado();
+        this.gestorResultado.setMonitor(this);
+        this.gestorResultado.opCerrarOrdenInspeccion();
     }
 
     public void solicitarSeleccionOrdenesInspeccionRealizadas(ArrayList<ArrayList<Object>> ordenes) {
@@ -109,7 +104,7 @@ public class Monitor implements Initializable {
         botonConfirmarObservacion.setVisible(true);
     }
 
-    public void alertaFaltaObservacion() {
+    public void alertaFaltaObservacion() { // CURSO ALTERNATIVO 3
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("No se ingresó una observacion");
         dialog.setHeaderText(null);
@@ -125,10 +120,9 @@ public class Monitor implements Initializable {
             this.gestorResultado.setObservacion(textoIngresado);
             this.gestorResultado.tomarConfirmacion();
         }
-
     }
 
-    public void alertaFaltaMotivo() {
+    public void alertaFaltaMotivo() { // CURSO ALTERNATIVO 3
         Alert alerta = new Alert(Alert.AlertType.WARNING);
         alerta.setTitle("ALERTA");
         alerta.setHeaderText(null);
@@ -137,8 +131,7 @@ public class Monitor implements Initializable {
         ArrayList<String> lista = new ArrayList<>(comboMotivos.getItems());
         this.solicitarSelTipoMotivo(lista);
 
-        // acá tampoco se como retomar el flujo
-        // aunque creo que como está hecha la interfaz no hace falta esto??
+        // creo que como está hecha la interfaz no hace falta esto??
         // fixme NO SE
     }
 
@@ -241,8 +234,8 @@ public class Monitor implements Initializable {
                 labelComentario.setVisible(false);
                 campoComentario.setVisible(false);
                 botonConfirmarComentario.setVisible(false);
+                confirmaCierre();
 
-                gestorResultado.tomarConfirmacion();
 
                 // llamar a lo que sigue ACÁ SALE DEL BUCLE
             } else if (response == ButtonType.CANCEL)  {
@@ -252,9 +245,13 @@ public class Monitor implements Initializable {
                 campoComentario.setVisible(false);
                 campoComentario.clear();
                 botonConfirmarComentario.setVisible(false);
-                //deberia repetir el bucle //SI LO HACE JARVIS SI LO HACE TODO SOY VERDEEEEEEEEEEEEEEEEEEEEE
+                //deberia repetir el bucle //SI LO HACE
             }
         });
+    }
+
+    public void confirmaCierre() {
+        gestorResultado.tomarConfirmacion();
     }
 
 
@@ -275,14 +272,6 @@ public class Monitor implements Initializable {
         mail.showAndWait();
     }
 
-    /* public void mostrarFinCU () {
-        Alert fin = new Alert(Alert.AlertType.INFORMATION);
-        fin.setTitle("FIN CU");
-        fin.setHeaderText(null);
-        fin.setContentText("SE TERMINÓ EL CU.");
-        fin.showAndWait();
-
-    } */
 
     public void mostrarFinCU() {
         Alert fin = new Alert(Alert.AlertType.INFORMATION);
@@ -290,8 +279,8 @@ public class Monitor implements Initializable {
         fin.setHeaderText(null);
 
         // Crear la imagen
-        ImageView imageView = new ImageView(new Image("/images/imagen.png")); // Ajusta la ruta
-        imageView.setFitHeight(100); // Ajusta el tamaño según necesites
+        ImageView imageView = new ImageView(new Image("/images/imagen.png"));
+        imageView.setFitHeight(100);
         imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
 
@@ -300,7 +289,6 @@ public class Monitor implements Initializable {
         contenido.setAlignment(Pos.CENTER);
         contenido.getChildren().addAll(new Label("SE TERMINÓ EL CU."), imageView);
 
-        // Establecer el contenido personalizado
         fin.getDialogPane().setContent(contenido);
 
         fin.showAndWait();
@@ -308,7 +296,7 @@ public class Monitor implements Initializable {
 
 
     @FXML
-    public void cancelaCU() {
+    public void cancelaCU() { // CURSO ALTERNATIVO 7
         Alert fin = new Alert(Alert.AlertType.INFORMATION);
         fin.setTitle("FIN CU");
         fin.setHeaderText(null);

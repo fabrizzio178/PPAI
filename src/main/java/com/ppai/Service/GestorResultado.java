@@ -18,7 +18,7 @@ import java.util.Comparator;
 @Getter
 public class GestorResultado {
     // Arrays con todas las instancias de cada clase que el gestor conoce
-    private ArrayList<Sismografo> todosSismografos; // ✅
+    private ArrayList<Sismografo> sismografos; // ✅ a la vez es el atributo sismografos
     private ArrayList<OrdenDeInspeccion> todosOrdenInspeccion; // ✅
     private ArrayList<Empleado> todosEmpleados; // ✅
     private Sesion sesionActual;
@@ -26,20 +26,22 @@ public class GestorResultado {
     private ArrayList<TipoMotivo> todosTipoMotivo; // ✅
     private Monitor monitor; // monitor
     // Atributos del gestor de ordenes de inspeccion
-    private String ordenInspSeleccionada;
-    private OrdenDeInspeccion ordenInspSeleccionadaObj;
-    private String observacion;
-    private ArrayList<String> tiposMotivosFueraDeServicio;
-    private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados;
-    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicioSeleccionadosObjetos;
-    private ArrayList<String> comentarios;
-    private String estadoOrdenInspeccionCerrada;
-    private Estado estadoOrdenInspeccionCerradaObj;
-    private LocalDateTime fechaHoraActual;
-    private Estado estadoSismografoFueraDeServicio;
-    private Empleado usuarioLogueado;
-    private ArrayList<OrdenDeInspeccion> ordenesInsp;
-    private ArrayList<ArrayList<Object>> datosOrdenInsp;
+    private String ordenInspSeleccionada; // ✅
+    private OrdenDeInspeccion ordenInspSeleccionadaObj; // 🤔
+    private String observacion; // ✅
+    private ArrayList<String> tiposMotivosFueraDeServicio; // ✅
+    private ArrayList<String> tiposMotivosFueraDeServicioSeleccionados; // 🤔
+    private ArrayList<TipoMotivo> tiposMotivosFueraDeServicioSeleccionadosObjetos; // 🤔
+    private ArrayList<String> comentarios; // ✅
+    private String estadoOrdenInspeccionCerrada; // ✅
+    private Estado estadoOrdenInspeccionCerradaObj; // 🤔
+    private LocalDateTime fechaHoraActual; // ✅
+    private Estado estadoSismografoFueraDeServicio; // ✅
+    private Empleado usuarioLogueado; // ✅
+    private ArrayList<OrdenDeInspeccion> ordenesInsp; // ✅
+    private ArrayList<ArrayList<Object>> datosOrdenInsp; // 🤔
+    private Boolean confirmacion; // ✅
+
 
 
 
@@ -66,7 +68,7 @@ public class GestorResultado {
         // UsuarioDAO usuarioDAO = new UsuarioDAO();
 
         SismografoDAO sismografoDAO = new SismografoDAO();
-        this.todosSismografos = sismografoDAO.getAllSismografos();
+        this.sismografos = sismografoDAO.getAllSismografos();
 
         OrdenDeInspeccionDAO ordenDeInspeccionDAO = new OrdenDeInspeccionDAO();
         this.todosOrdenInspeccion = ordenDeInspeccionDAO.getAllOrdenes();
@@ -80,8 +82,8 @@ public class GestorResultado {
                 null,
                 new Usuario(
                         "1234",
-                        "xX_Pipo_Xx",
-                        "TETA",
+                        "Pipo",
+                        "Perfil 1",
                         1,
                         new Empleado(
                                 "Llabot",
@@ -108,15 +110,10 @@ public class GestorResultado {
 
         this.buscarRILogueado(); // 3
         this.buscarOrdenesInsp(); // 4
-        ordenarPorFechaFinalizacion(); // 5
-        this.mostrarDatos(this.todosSismografos); // 6
+        this.ordenarPorFechaFinalizacion(); // 5
+        this.mostrarDatos(this.sismografos); // 6
         monitor.solicitarSeleccionOrdenesInspeccionRealizadas(datosOrdenInsp); // 7 y 8
-        //pedirObservacion();
 
-
-        // monitor.solicitarSelTipoMotivo();
-
-        //monitor.solicitarConfirmacion();
     }
     // 3 - Busca al responsable de inspeccion logueado (le pregunta a la sesion actual).
 
@@ -128,7 +125,7 @@ public class GestorResultado {
     // pregunta las 2 condiciones, las que cumple las añade al array creado.
 
     public void buscarOrdenesInsp() {
-        this.ordenesInsp = new ArrayList<>(); // porque carajo crea esto perdon todavia no se
+        this.ordenesInsp = new ArrayList<>();
         for(OrdenDeInspeccion orden : todosOrdenInspeccion) {
             if(orden.sosCompletamenteRealizada() && orden.sosDeEmpleado(this.usuarioLogueado)){
                 ordenesInsp.add(orden);
@@ -142,7 +139,7 @@ public class GestorResultado {
         ordenesInsp.sort(Comparator.comparing(OrdenDeInspeccion::getFechaHoraFinalizacion));
     }
 
-    // 6 - Se llama mostrar datos y hace de todo menos mostrar los datos, lo que hace es guardar los datos de las ordenes --> POR QUE ES VERDE???
+    // 6 - Se llama mostrar datos y hace de to,do menos mostrar los datos, lo que hace es guardar los datos de las ordenes
     // en un array y como resultado final te da un array de arrays de objetos, terrible.
     public void mostrarDatos (ArrayList<Sismografo> todosSismografos) {
         this.datosOrdenInsp = new ArrayList<>();    // Tengo dudas by: salva
@@ -202,8 +199,7 @@ public class GestorResultado {
         this.comentarios = new ArrayList<>();
 
 
-        monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio);
-
+        monitor.solicitarSelTipoMotivo(tiposMotivosFueraDeServicio); // acá empieza el loop
     }
 
 
@@ -226,9 +222,10 @@ public class GestorResultado {
     // 23 - TomarConfirmacion()
 
     public void tomarConfirmacion() {
+        this.confirmacion = true;
         Boolean validacionOI = this.validarObservacionExistente();
         Boolean validacionMotivo = this.validarMotivoExistente();
-        if (validacionOI && validacionMotivo) { //SIGUE EL DIAGRAMA
+        if (validacionOI && validacionMotivo && this.confirmacion) { //SIGUE EL DIAGRAMA!
             this.buscarEstadoCerradaOI();
             this.getFechaHoraActual();
             this.buscarFueraDeServicio();
@@ -238,9 +235,9 @@ public class GestorResultado {
             this.notificarMonitorCCRS();
             this.finCU();
         } else if (!validacionOI) {
-            monitor.alertaFaltaObservacion();
+            monitor.alertaFaltaObservacion(); // CURSO ALTERNATIVO 3
         } else {
-            monitor.alertaFaltaMotivo();
+            monitor.alertaFaltaMotivo(); // CURSO ALTERNATIVO 3
 
         }
 
@@ -249,11 +246,7 @@ public class GestorResultado {
     // 25 - Validar que la observacion no este vacia y haya elegido al menos un motivo.
     // Si esto da false es un caso alternativo.
     public boolean validarObservacionExistente() {
-        if (observacion.isEmpty()) {
-            return false;
-        } else {
-            return validarMotivoExistente(); // No se si esto deberia ir por fuera o no del metodo, por el diagrama de secuencia
-        }
+        return !observacion.isEmpty();
     }
 
     // 26- Validar motivo existente, podria ir en la funcion 25 pero hay que respetar el diagrama de secuencia.
@@ -281,7 +274,7 @@ public class GestorResultado {
     public void buscarFueraDeServicio(){
         for (Estado estado: todosEstados ){
             if (estado.sosAmbitoSismografo() && estado.sosFueraDeServicio()){
-                this.estadoSismografoFueraDeServicio = estado; // Creo que aca esta la misma inconsistencia que en la anterior
+                this.estadoSismografoFueraDeServicio = estado;
             }
         }
     }
@@ -293,7 +286,7 @@ public class GestorResultado {
 
 
     // 31 - PonerSismografoFueraDeServicio
-    // Este método esta asi porque no teniamos al sismografo previamente seleccionado. Ademas, se respetan las
+    // Este méto,do esta asi porque no teniamos al sismografo previamente seleccionado. Ademas, se respetan las
     // relaciones dadas en la vista estatica de la realizacion de CU de análisis
     public void ponerSismografoFueraDeServicio(){
         this.tiposMotivosFueraDeServicioSeleccionadosObjetos = new ArrayList<>();
@@ -303,12 +296,11 @@ public class GestorResultado {
                     tiposMotivosFueraDeServicioSeleccionadosObjetos.add(tipoMotivo);
                     break;
                 }
-            } // DOBLE LOOP PARA TIEMPO DE EJECUCION EXPONENCIAL HELL YEAH transforma los strings a tipoMotivo
+            } // transforma los strings a tipoMotivo
 
         }
-        this.ordenInspSeleccionadaObj.getEstacionSismologica().getSismografo(todosSismografos).fueraDeServicio(fechaHoraActual,
+        this.ordenInspSeleccionadaObj.getEstacionSismologica().getSismografo(sismografos).fueraDeServicio(fechaHoraActual,
                 estadoSismografoFueraDeServicio,usuarioLogueado,tiposMotivosFueraDeServicioSeleccionadosObjetos,comentarios);
-        // EL ERROR ES PORQUE TRABAJAMOS CON STRINGS Y ME PIDE TRABAJAR CON OBJETOS (creamos el tiposMotivosObjetos para que !!!!!!!!!
     }
 
     // 32 - llama al metodo mostrar mail del motior
@@ -326,7 +318,7 @@ public class GestorResultado {
         monitor.notificarMonitorCCRS(); // acá en realidad deberia ir a otro monitor, lo uso para enviar la alerta
     }
 
-    // 33 - lo mismo ya basta ODIO LA CONSISTENCIA EL DIAGRAMA ESTA MAL MALDITO COLODROID
+    // 33 - lo mismo ya basta
 
     public void finCU(){
         monitor.mostrarFinCU();
@@ -334,15 +326,5 @@ public class GestorResultado {
         System.exit(0);
     }
 
-    //ARREGLADO?: no se estan pasando los tipos de motivos y sus comentarios al cierre, falta agregar eso en el back
-    //todo: ^^^^^^ revisar!!!!!!!!!!!
-    //todo: LA PROXIMA FABRI POR FAVOR TRABAJÁ EN LA MISMA BRANCH QUE EL RESTO ASÍ NO HAY QUE HACER NADA DE MAS
-
-    //ARREGLADO: si toco el boton continuar sin seleccionar la orden solo desaparece el boton y no pasa nada mas
-    //ARREGLADO: si no pongo observacion al confirmar el cierre desaparece to,do
-    //ARREGLADO: ^^^^^ no se como hacerlo, en el metodo aclaro mejor (aclaro que es lo que NO se hacer)
-    //ARREGLADO: puedo confirmar motivo sin seleccionar nada... ESO ESTÁ MAL
-
-    //todo: revisar punto 13 de la descripcion de CU, deberia haber otra pantalla...
     //LOS CASOS ALTERNATIVOS CONTEMPLADOS SON A3 y A7
 }
